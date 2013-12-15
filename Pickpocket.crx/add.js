@@ -1,24 +1,11 @@
 document.addEventListener('DOMContentLoaded', initialize, false);
 
-function goAway() {
-	if (iframed) {
-		cr.sendMessage({name:'closeAddDialog'});
-	} else {
-		self.close();
-	}
-}
-function handleAddMarkKeyPress(e) {
-	if (e.which == 13) {
-		e.target.blur();
-		submitItem();
-	}
-}
 function initialize() {
 	iframed = (/pickpocket-add-frame/.test(window.name));
 	(mac = /^Mac/.test(navigator.platform));
 	(win = /^Win/.test(navigator.platform)) && (document.body.className += ' win');
 	(xp = /^Windows NT 5/.test(navigator.userAgent)) && (document.body.className += ' xp');;
-	(localStorage.loggingEnabled != 'yes') && (console.log = function () {});
+	(localStorage.loggingEnabled == 'yes') || (console.log = function () {});
 	
 	if (iframed) {
 		cr = chrome.runtime;
@@ -90,6 +77,19 @@ function initialize() {
 				tags  : item ? item.tags : null
 			});
 		});
+	}
+}
+function goAway() {
+	if (iframed) {
+		cr.sendMessage({name:'closeAddDialog'});
+	} else {
+		self.close();
+	}
+}
+function handleAddMarkKeyPress(e) {
+	if (e.which == 13) {
+		e.target.blur();
+		submitItem();
 	}
 }
 function populateAddItemForm(data) {

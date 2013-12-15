@@ -1,26 +1,3 @@
-function getMyButton() {
-	return se.toolbarItems.filter(function (ti) {
-		return (
-			ti.browserWindow === sa.activeBrowserWindow && 
-			ti.popover && ti.popover.identifier === safari.self.identifier
-		);
-	})[0];
-}
-function goAway() {
-	if (snowLeopard)
-		setTimeout('safari.self.hide()', 100);
-	else
-		safari.self.hide();
-	var thisButton = getMyButton();
-	if (thisButton.identifier === 'mainbutton')
-		thisButton.popover = null;
-}
-function handleAddMarkKeyPress(e) {
-	if (e.which == 13) {
-		e.target.blur();
-		submitNewItem();
-	}
-}
 function initialize(firstTime) {
 	if (firstTime) {
 		sa = safari.application;
@@ -62,6 +39,29 @@ function initialize(firstTime) {
 				optionalFields[i].style.display = (localStorage.defaultService === 'pocket') ? 'none' : '';
 			populateAddItemForm();
 		};
+	}
+}
+function getMyButton() {
+	return se.toolbarItems.filter(function (ti) {
+		return (
+			ti.browserWindow === sa.activeBrowserWindow && 
+			ti.popover && ti.popover.identifier === safari.self.identifier
+		);
+	})[0];
+}
+function goAway() {
+	if (snowLeopard)
+		setTimeout('safari.self.hide()', 100);
+	else
+		safari.self.hide();
+	var thisButton = getMyButton();
+	if (thisButton.identifier === 'mainbutton')
+		thisButton.popover = null;
+}
+function handleAddMarkKeyPress(e) {
+	if (e.which == 13) {
+		e.target.blur();
+		submitNewItem();
 	}
 }
 function populateAddItemForm(blurb) {

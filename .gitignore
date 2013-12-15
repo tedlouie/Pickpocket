@@ -1,3 +1,7 @@
+/archive
+/assets
+/library
+/old
 /private
 .DS_Store
 keys.js
