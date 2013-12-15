@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Canisbos Computing</string>
+	<key>Builder Version</key>
+	<string>9537.73.9</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pickpocket</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.canisbos.pickpocket</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.3.3</string>
+	<key>CFBundleVersion</key>
+	<string>87</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>global.html</string>
+		<key>Menus</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>myMenu</string>
+				<key>Menu Items</key>
+				<array>
+					<dict>
+						<key>Command</key>
+						<string>showList</string>
+						<key>Identifier</key>
+						<string>showlist</string>
+						<key>Title</key>
+						<string>List/Search Links</string>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>openTabs</string>
+						<key>Identifier</key>
+						<string>opentabs</string>
+						<key>Title</key>
+						<string>Open Unread Links</string>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>addCurrentPage</string>
+						<key>Identifier</key>
+						<string>addlink</string>
+						<key>Title</key>
+						<string>Add Link to Pocket</string>
+					</dict>
+					<dict>
+						<key>Separator</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>Command</key>
+						<string>openSettings</string>
+						<key>Identifier</key>
+						<string>settings</string>
+						<key>Title</key>
+						<string>Settings...</string>
+					</dict>
+				</array>
+			</dict>
+		</array>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>login.html</string>
+				<key>Height</key>
+				<real>170</real>
+				<key>Identifier</key>
+				<string>loginP</string>
+				<key>Width</key>
+				<real>340</real>
+			</dict>
+			<dict>
+				<key>Filename</key>
+				<string>confirm.html</string>
+				<key>Height</key>
+				<real>120</real>
+				<key>Identifier</key>
+				<string>confirmP</string>
+				<key>Width</key>
+				<real>360</real>
+			</dict>
+			<dict>
+				<key>Filename</key>
+				<string>report.html</string>
+				<key>Height</key>
+				<real>120</real>
+				<key>Identifier</key>
+				<string>reportP</string>
+				<key>Width</key>
+				<real>360</real>
+			</dict>
+			<dict>
+				<key>Filename</key>
+				<string>list.html</string>
+				<key>Height</key>
+				<real>100</real>
+				<key>Identifier</key>
+				<string>listP</string>
+				<key>Width</key>
+				<real>600</real>
+			</dict>
+			<dict>
+				<key>Filename</key>
+				<string>add.html</string>
+				<key>Height</key>
+				<real>220</real>
+				<key>Identifier</key>
+				<string>addP</string>
+				<key>Width</key>
+				<real>600</real>
+			</dict>
+			<dict>
+				<key>Filename</key>
+				<string>settings.html</string>
+				<key>Height</key>
+				<real>692</real>
+				<key>Identifier</key>
+				<string>settingsP</string>
+				<key>Width</key>
+				<real>530</real>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>execDefaultAction</string>
+				<key>Identifier</key>
+				<string>mainbutton</string>
+				<key>Image</key>
+				<string>caret.png</string>
+				<key>Label</key>
+				<string>Pickpocket Get</string>
+				<key>Menu</key>
+				<string>myMenu</string>
+				<key>Palette Label</key>
+				<string>Pickpocket Get</string>
+				<key>Tool Tip</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>Command</key>
+				<string>addCurrentPage</string>
+				<key>Identifier</key>
+				<string>addbutton</string>
+				<key>Image</key>
+				<string>caret-down.png</string>
+				<key>Include By Default</key>
+				<false/>
+				<key>Label</key>
+				<string>Pickpocket Put</string>
+				<key>Palette Label</key>
+				<string>Pickpocket Put</string>
+				<key>Popover</key>
+				<string>addP</string>
+				<key>Tool Tip</key>
+				<string>Add the current page to Pocket.</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>injected.js</string>
+			</array>
+		</dict>
+	</dict>
+	<key>Description</key>
+	<string>Access your Pocket links in a popover or open all the unread ones in tabs.</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://dl.dropbox.com/u/23990/Canisbos/Pickpocket/Update.plist</string>
+	<key>Website</key>
+	<string>http://canisbos.com/</string>
+</dict>
+</plist>

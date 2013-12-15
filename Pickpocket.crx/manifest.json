@@ -1,0 +1,35 @@
+{
+	"name"        : "Pickpocket",
+	"description" : "Open or search your Pocket links from a convenient popup.",
+	"version"     : "1.3.3.1",
+	
+	"background"       : { "page" : "background.html" },
+	"browser_action"   : {
+		"default_icon" : {
+			"19" : "icon-19.png",
+			"38" : "icon-19@2x.png"
+		},
+		"default_title" : "Pickpocket"
+	},
+	"content_scripts" : [{
+		"matches" : [ "http://*/*", "https://*/*" ],
+		"js"      : [ "content.js" ]
+	}],
+	"options_page"    : "options.html",
+	"icons"           : {
+		"128" : "icon-128-aqua.png",
+		"48"  : "icon-48-aqua.png",
+		"16"  : "icon-16.png"
+	},
+	
+	"permissions" : [
+		"tabs", "contextMenus",
+		"https://readitlaterlist.com/*",
+		"https://getpocket.com/*",
+		"http://*/*", "https://*/*"
+	],
+	"web_accessible_resources" : [ "report.html", "add.html", "oauth.html" ],
+	"content_security_policy"  : "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+	
+	"manifest_version": 2
+}

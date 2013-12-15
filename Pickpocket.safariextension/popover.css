@@ -1,0 +1,114 @@
+html {
+	border-radius: 3px;
+	padding: 20px;
+	background: #f0f0f0;
+}
+body {
+	margin: 0;
+	font-family: "Lucida Grande";
+	font-size: 13px;
+}
+body.confirm {
+	height: 80px;
+}
+body.report {
+	height: 80px;
+}
+form {
+	text-align: center;
+}
+form > table {
+	display: inline-block;
+}
+div.formhead {
+	margin-bottom: 20px;
+	font-size: 14px;
+	font-weight: bold;
+}
+td.label {
+	padding-right: 5px;
+	text-align: right;
+}
+td.input input {
+	width: 160px;
+}
+td.buttons {
+	padding-top: 10px;
+	text-align: center;
+}
+div.buttons {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	width: 320px;
+	margin-top: 20px;
+	text-align: right;
+}
+button {
+	width: 5em;
+	margin: 0 2px;
+	font-size: 13px;
+	-webkit-appearance: square-button;
+}
+button.submit {
+	font-weight: bold;
+}
+#dontasklabel {
+	visibility: hidden;
+	position: absolute;
+	left: 0;
+	font-size: 11px;
+}
+
+/* Styles for settings.html */
+h1 {
+	margin-top: 0;
+	margin-bottom: 1.5em;
+	border-bottom: 1px solid silver;
+	padding-bottom: 4px;
+	font-size: 18px;
+}
+.blockheading {
+	margin-top: 2em;
+	font-weight: bold;
+}
+.controlblock {
+	margin: 1em;
+	margin-right: 0;
+}
+.controlrow {
+	margin: 0 0 3px 0;
+	cursor: default !important;
+}
+.controlrow.sub {
+	margin-left: 2em;
+}
+.range {
+	vertical-align: middle;
+}
+.hint {
+	font-size: 11px;
+}
+.hint.indent {
+	margin-left: 2em;
+}
+.disabled {
+	color: silver;
+}
+input#hki {
+	/*width: 144px;*/
+	vertical-align: middle;
+	text-align: center;
+}
+button#hkrb {
+	width: auto;
+	height: 19px;
+	vertical-align: middle;
+	font-size: 11px;
+}
+a#reauth {
+	font-size: smaller;
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel='stylesheet' type='text/css' href='icomoon.css'>
+	<link rel='stylesheet' type='text/css' href='list.css'>
+	<script type="text/javascript" charset="utf-8" src="list.common.js"></script>
+	<script type="text/javascript" charset="utf-8" src="list.safari.js"></script>
+	<script type="text/notscript" id="li_tmpl">
+		<div class="item-top">
+			<span class="age">{{age}} ago</span>
+			<span class="name-tags">
+				<img class="favicon">
+				<span class="name">{{name}}</span>
+				<span class="tags">{{tags}}</span>
+			</span>
+		</div>
+		<div class="item-bottom">
+			<span class="ia_wrapper">
+				<span class="icon ia delete" data-action="delete" title="Delete this item"></span>
+				<span class="icon ia pin" data-action="pin" title="{{pin}} this item"></span>
+				<span class="icon ia archive" data-action="archive" title="{{arc}} this item"></span>
+			</span>
+			<span class="blurb">{{blurb}}</span><span class="url">{{url}}</span>
+		</div>
+	</script>
+</head>
+<body>
+	<div id="outerdiv">
+	   <div id="innerdiv">
+		<div id="upperdiv">
+			<input id="inputfield" class="textinput" type="text">
+			<span id="messagespan"></span>
+			<label id="snolabel"><input id="snocheck" type="checkbox"> New only</label>
+			<span id="buttonspan">
+				<button id="openallbutton" class="button icon icon-play" title="Open all unread links" tabindex="-1"
+					></button>
+				<button id="archiveallbutton" class="button icon icon-checkmark" title="Archive all unread links" 
+					tabindex="-1"></button>
+				<button id="addbutton" class="button icon icon-plus" title="Add a new link" tabindex="-1"></button>
+				<button id="menubutton" class="button icon icon-menu" title="List other actions" tabindex="-1"></button>
+			</span>
+			<ul id="menu">
+				<li id="reloadbutton">Reload All</li>
+				<li id="settingsbutton">Settings</li>
+			</ul>
+		</div>
+		<div id="lowerdiv">
+			<ul id="itemlist"></ul>
+		</div>
+	   </div>
+	</div>
+</body>
+</html>

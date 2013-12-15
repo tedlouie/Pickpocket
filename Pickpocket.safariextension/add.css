@@ -1,0 +1,73 @@
+body {
+	padding-left: 5px;
+	/*padding-right: 5px;*/
+	background-color: rgba(240,240,240,0.5);
+	cursor: default;
+}
+#am_div {
+	margin: 0;
+	font: normal 13px "Helvetica Neue", sans-serif;
+}
+#am_div #header {
+	position: relative;
+}
+#am_div h1 {
+	display: inline-block;
+	float: left;
+	margin-left: 50px;
+	font-size: 18px;
+	font-weight: normal;
+}
+#am_div .subtext {
+	margin-left: 1ex;
+	font-size: 11px;
+	color: gray;
+}
+#am_div #buttons {
+	display: inline-block;
+	float: right;
+	margin-right: 36px;
+	margin-top: 10px;
+}
+#am_div #buttons button {
+	width: 66px;
+	margin: 0 2px;
+	padding: 4px 0;
+	font-size: 13px;
+}
+#am_div #buttons button#submit {
+	font-weight: bold;
+}
+#am_div div#form {
+	margin: 15px 40px 15px 20px;
+}
+#am_div #formtable {
+	width: 100%;
+}
+#am_div #labels {
+	width: 80px;
+}
+#am_div #fields {}
+#am_div td, #am_div th {
+	padding: 1px 3px;
+	vertical-align: top;
+}
+#am_div th {
+	text-align: right;
+	font-weight: normal;
+}
+#am_div th > label {
+	position: relative;
+	top: 5px;
+}
+#am_div input[type="text"],
+#am_div textarea {
+	width: 100%;
+	padding: 3px;
+	border: 1px solid silver;
+	border-radius: 2px;
+	font: normal 12px Helvetica;
+}
+#am_div #blurb {
+	height: 42px;
+}

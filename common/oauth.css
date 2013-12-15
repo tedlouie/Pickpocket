@@ -1,0 +1,42 @@
+html {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: center; 
+	height: 100%;
+	background: whiteSmoke;
+}
+body {
+	width: 600px;
+	margin: -15% auto 0;
+	padding: 32px;
+	font: normal 14px/1.5 "Lucida Grande", "Segoe UI", sans-serif;
+	background: white;
+	border-radius: 7px;
+}
+#start, .newusers, .oldusers {
+	display: none;
+}
+#startbutton {
+	margin: 32px 32px 0;
+	padding: 16px;
+	font-weight: bold;
+	color: white;
+	cursor: pointer;
+	background: #0080ff;
+	border-radius: 7px;
+	-webkit-font-smoothing: antialiased;
+	text-align: center;
+	text-shadow: 0px 1px black;
+}
+#status {
+	margin: 20px;
+	display: none;
+	background: url("watch.gif") no-repeat center center;
+}
+.error {
+	font-weight: bold;
+	color: c00;
+}
+.centered {
+	text-align: center;
+}

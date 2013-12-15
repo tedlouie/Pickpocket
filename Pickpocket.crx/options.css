@@ -1,0 +1,52 @@
+body {
+	width: 529px;
+	margin: 24px 36px;
+	background: whiteSmoke;
+	font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+}
+h1 {
+	/*width: 16em;*/
+	margin-bottom: 1.5em;
+	border-bottom: 1px solid silver;
+	padding-bottom: 4px;
+	font-size: 18px;
+}
+.blockheading {
+	margin-top: 2em;
+	font-weight: bold;
+}
+.controlblock {
+	margin: 1em;
+	margin-right: 0;
+}
+.controlrow {
+	margin: 0 0 3px 0;
+	cursor: default !important;
+}
+.controlrow.sub {
+	margin-left: 2em;
+}
+.disabled {
+	color: silver;
+}
+.range {
+	vertical-align: middle;
+}
+.hint {
+	font-size: 11px;
+}
+.hint.indent {
+	margin-left: 2em;
+}
+#status {
+	display: none;
+	margin-top: 80px;
+	text-align: center;
+}
+a#reauth {
+	font-size: smaller;
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}

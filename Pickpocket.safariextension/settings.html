@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script type="text/javascript" charset="utf-8" src="settings.js"></script>
+	<link rel='stylesheet' type='text/css' href='popover.css'>
+</head>
+<body class="settings">
+	<h1>Pickpocket Settings</h1>
+	
+	<p class="blockheading">When I click the toolbar button:</p>
+	<div class="controlblock" id="defaultAction">
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="da0" name="defaultAction" value="showlist">
+				List unread links in a popup
+			</label>
+		</p>
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="da1" name="defaultAction" value="opentabs">
+				Open unread links in tabs
+			</label>
+		</p>
+		<p class="controlrow sub" parent="da1">
+			<label id="unw_label" class="disabled">
+				<input type="checkbox" id="unw" name="useNewWindow" disabled>
+				Use a new window
+			</label>
+		</p>
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="da2" name="defaultAction" value="showmenu">
+				Show a menu of possible actions
+			</label>
+		</p>
+	</div>
+	
+	<p class="blockheading">Open links by default as:</p>
+	<div class="controlblock" id="defaultPageView">
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="dv0" name="defaultPageView" value="normal">
+				Normal web pages
+			</label>
+		</p>
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="dv1" name="defaultPageView" value="reading">
+				Pocket reading-optimized pages
+			</label>
+		</p>
+		<p>
+			<span class="hint">(Press Alt or Option while opening a link to override this setting)</span>
+		</p>
+	</div>
+	
+	<p class="blockheading">Archive each opened link:</p>
+	<div class="controlblock" id="archiveTrigger">
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="at0" name="archiveTrigger" value="focus">
+				When I activate its tab
+			</label>
+		</p>
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="at1" name="archiveTrigger" value="leave">
+				When I close its tab
+			</label>
+		</p>
+	 	<p class="controlrow sub" parent="at1">
+			<label id="car_label" class="disabled">
+				<input type="checkbox" id="car" name="confirmArchive" disabled>
+				Prompt for confirmation
+			</label>
+		</p>
+	 	<p class="controlrow">
+			<label>
+				<input type="radio" id="at2" name="archiveTrigger" value="none">
+				Never
+			</label>
+		</p>
+	</div>
+	
+	<p class="blockheading">Keep in new item list:</p>
+	<div class="controlblock" id="pinMethod">
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="pm0" name="pinMethod" value="fave">
+				Favorites
+			</label>
+		</p>
+		<p class="controlrow">
+			<label>
+				<input type="radio" id="pm1" name="pinMethod" value="tag">
+				Items tagged "pinned"
+			</label>
+		</p>
+	</div>
+
+	<p class="blockheading">Other settings</p>
+	<div class="controlblock" id="hotkey">
+		<p class="controlrow loose">
+			<label>
+				Pickpocket hotkey:
+				<input type='text' id='hki' name='hotkey'>
+			</label>
+		<button id='hkrb'>Restore Default</button>
+		</p>
+	</div>
+	<div class="controlblock" id="addContextMenuItem">
+		<p class="controlrow loose">
+			<label>
+				<input type="checkbox" id="acm" name="addContextMenuItem">
+				Enable "Add Page to Pocket" context menu item
+			</label>
+		</p>
+	</div>
+	<div class="controlblock" id="checkInterval">
+		<p class="controlrow loose">
+			<label id="cilabel">Check for new links every
+				<input type="range" class="range" id="ci" name="checkInterval" value="5" min="0" max="30">
+				<span id="cii"></span> minutes
+			</label>
+			<br><span class="hint">
+				(Setting this to 0 disables both periodic checking and the toolbar button unread badge)</span>
+		</p>
+	</div>
+	<div class="controlblock" id="downloadLimit">
+		<p class="controlrow loose">
+			<label id="dllabel">Download up to 
+				<input type="range" class="range" id="dl" name="downloadLimit" 
+					value="1000" min="500" max="10000" step="500">
+				<span id="dli"></span> links
+			</label>
+			<br><span class="hint">(More downloaded links mean slower searches and more memory use)</span>
+		</p>
+	</div>
+	<div class="controlblock" id="reloadOnUpdate">
+		<p class="controlrow loose">
+			<label>
+				<input type="checkbox" id="rou" name="reloadOnUpdate">
+				Download ALL links when updating list, not just new ones
+			</label>
+			<br><span class="hint">
+				(Use this if you often delete items outside of Pickpocket. Can make opening the popup slow!)</span>
+		</p>
+	</div>
+	<div class="controlblock" id="newExcludesTagged">
+		<p class="controlrow loose">
+			<label>
+				<input type="checkbox" id="net" name="newExcludesTagged">
+				Exclude tagged items from unread list
+			</label>
+		</p>
+	</div>
+	<div class="controlblock" id="reauthorize">
+		<p class="controlrow loose">
+			<a id="reauth">Reauthorize Pickpocket</a>
+		</p>
+	</div>
+</body>
+</html>

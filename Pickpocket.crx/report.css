@@ -1,0 +1,33 @@
+html {
+	height: 100%;
+	border-radius: 4px;
+}
+body {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: center;
+	height: 100%;
+	margin: 0;
+	padding: 0 20px;
+	background: white;
+	text-align: center;
+	color: black;
+	font: normal 13px "Helvetica Neue", Arial, sans-serif;
+}
+body.success {
+	background: #F2FFE5;
+}
+body.error {
+	background: #FFEDED;
+}
+#report {
+	margin-top: 0;
+}
+#click-prompt {
+	display: none;
+	margin-bottom: 0.5em;
+}
+#timeout {
+	font-weight: bold;
+	color: red;
+}

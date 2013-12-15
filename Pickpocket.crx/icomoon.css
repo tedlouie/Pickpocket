@@ -1,0 +1,63 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('icomoon.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.icon {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-star:before {
+	content: "\e600";
+}
+.icon-play:before {
+	content: "\e601";
+}
+.icon-plus:before {
+	content: "\e604";
+}
+.icon-star3:before {
+	content: "\e606";
+}
+.icon-pushpin:before {
+	content: "\e607";
+}
+.icon-close:before {
+	content: "\e608";
+}
+.icon-cog:before {
+	content: "\e609";
+}
+.icon-close:before {
+	content: "\e60a";
+}
+.icon-radio-unchecked:before {
+	content: "\e602";
+}
+.icon-menu:before {
+	content: "\e603";
+}
+.icon-checkmark:before {
+	content: "\e605";
+}
+.icon-record:before {
+	content: "\e60b";
+}
+.icon-cycle:before {
+	content: "\e60c";
+}
+.icon-cross:before {
+	content: "\e60d";
+}

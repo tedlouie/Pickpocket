@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" charset="utf-8" src="add.js"></script>
+	<script type="text/javascript" charset="utf-8" src="wick.js"></script>
+	<link rel='stylesheet' type='text/css' href='add.css'>
+	<link rel='stylesheet' type='text/css' href='wick.css'>
+</head>
+<body>
+	<div id="am_div">
+		<div id="header">
+			<h1>Add Link to Pocket</h1>
+			<div id="buttons">
+				<button id="submit" tabindex="50">Submit</button>
+				<button id="cancel" tabindex="60">Cancel</button>
+			</div>
+		</div>
+		<div id="form">
+			<table id="formtable">
+				<col id="labels"><col id="fields">
+				<tr><th><label>Title:</label></th><td><input id="title" type="text" tabindex="10"></td></tr>
+				<tr><th><label>URL:</label></th><td><input id="url" type="text" tabindex="20"></td></tr>
+				<tr class="opt"><th><label>Description:</label></th><td><textarea id="blurb" tabindex="30"></textarea></td></tr>
+				<tr><th><label>Tags:</label></th>
+					<td>
+						<input id="tags" class="wickEnabled" type="text" tabindex="40">
+						<div id="smartInputFloater" class="floater">
+							<div id="smartInputFloaterContent"></div>
+						</div><br>
+						<span class="subtext">Example:&nbsp; food, new york, yummy</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
