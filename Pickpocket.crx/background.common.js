@@ -15,7 +15,7 @@ var defaults = {
 	sortOldestFirst    : 'no',
 	useAlternateIcon   : 'no',
 	useNewWindow       : 'no',
-	filterSets    : JSON.stringify({
+	filterSets : JSON.stringify({
 		'All' : {
 			service     : 'pocket',
 			urlPatterns : [],
@@ -39,7 +39,8 @@ var services = {
 };
 var faviconRegex = /<link.* rel=['"](?:shortcut )?icon['"][^>]* href=['"]([^'"]+)['"][^>]*>/i;
 var ls = localStorage;
-var ta = document.createElement('a');
+var a = document.createElement('a');
+var div = document.createElement('div');
 
 function XhrDataObj(type, members) {
 	if (type === 'pocket') {
@@ -174,12 +175,12 @@ function createItemArray(xhr, service) {
 		var i, o, listObj = JSON.parse(xhr.responseText).list;
 		for (i in listObj) {
 			o = listObj[i];
-			if (o.given_url||o.resolved_url) {
+			if (o.given_url || o.resolved_url) {
 				itemArray.push({
 					id      : o.item_id,
-					url     : o.given_url||o.resolved_url,
-					title   : o.given_title||o.resolved_title,
-					blurb   : o.excerpt,
+					url     : o.given_url || o.resolved_url,
+					title   : o.given_title || o.resolved_title,
+					blurb   : /</.test(o.excerpt) ? getPlainText(o.excerpt) : o.excerpt,
 					tags    : (o.tags) ? getTagArray(o) : [],
 					faved   : o.favorite,
 					time    : (o.time_added + '000') * 1,
@@ -352,8 +353,8 @@ function getAllTags() {
 	return _.chain(itemCache).map(function (item) { return item.tags }).flatten().sort().uniq(true).value();
 }
 function getBaseUrl(pageUrl) {
-	ta.href = pageUrl;
-	return ta.protocol + '//' + ta.host;
+	a.href = pageUrl;
+	return a.protocol + '//' + a.host;
 }
 function getCachedFavicon(baseUrl) {
 	var lsItem = localStorage['favicon@' + baseUrl];
@@ -443,8 +444,8 @@ function getFaviconUrlFromPage(pageUrl, callback) {
 	xhr.send();
 }
 function getFullyQualifiedIconUrl(url, baseUrl) {
-	ta.href = url;
-	if (!/^http/.test(ta.protocol))
+	a.href = url;
+	if (!/^http/.test(a.protocol))
 		return baseUrl + url;
 	return url;
 }
@@ -489,6 +490,10 @@ function getItems(service, since, state, limit, callback, badCallback) {
 		},
 		onFailure : badCallback
 	});
+}
+function getPlainText(html) {
+	div.innerHTML = html.replace(/<script[^>]*>/g, '');
+	return div.textContent;
 }
 function getRandomUnreadItem() {
 	var unreadItems = getUnreadItems();
