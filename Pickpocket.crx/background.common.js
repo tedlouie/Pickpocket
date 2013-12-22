@@ -37,10 +37,10 @@ var services = {
 		}
 	}
 };
-var faviconRegex = /<link.* rel=['"](?:shortcut )?icon['"][^>]* href=['"]([^'"]+)['"][^>]*>/i;
 var ls = localStorage;
 var a = document.createElement('a');
 var div = document.createElement('div');
+var faviconRegex = /<link.* rel=['"](?:shortcut )?icon['"][^>]* href=['"]([^'"]+)['"][^>]*>/i;
 
 function XhrDataObj(type, members) {
 	if (type === 'pocket') {
@@ -180,7 +180,7 @@ function createItemArray(xhr, service) {
 					id      : o.item_id,
 					url     : o.given_url || o.resolved_url,
 					title   : o.given_title || o.resolved_title,
-					blurb   : /</.test(o.excerpt) ? getPlainText(o.excerpt) : o.excerpt,
+					blurb   : o.excerpt ? _.escape(o.excerpt) : '',
 					tags    : (o.tags) ? getTagArray(o) : [],
 					faved   : o.favorite,
 					time    : (o.time_added + '000') * 1,
