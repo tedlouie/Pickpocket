@@ -1,7 +1,7 @@
 {
 	"name"        : "Pickpocket",
 	"description" : "Open or search your Pocket links from a convenient popup.",
-	"version"     : "1.3.3.3",
+	"version"     : "1.3.4.0",
 	
 	"background"       : { "page" : "background.html" },
 	"browser_action"   : {
@@ -15,8 +15,22 @@
 		"matches" : [ "http://*/*", "https://*/*" ],
 		"js"      : [ "content.js" ]
 	}],
-	"options_page"    : "options.html",
-	"icons"           : {
+	"commands" : {
+		"_execute_browser_action" : {
+			"suggested_key" : {
+				"default" : "Ctrl+Shift+K",
+				"mac"     : "Command+Shift+K"
+			}
+		},
+		"add-current-page" : {
+			"suggested_key" : {
+				"default" : "Alt+Shift+K"
+			},
+			"description" : "Add the current page to Pocket"
+		}
+	},
+	"options_page" : "options.html",
+	"icons"        : {
 		"128" : "icon-128-aqua.png",
 		"48"  : "icon-48-aqua.png",
 		"16"  : "icon-16.png"

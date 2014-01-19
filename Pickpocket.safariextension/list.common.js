@@ -342,7 +342,7 @@ function handleInputKeyDown(e) {
 			} break;
 		case  13:    // return
 			e.preventDefault();
-			if (modkeys == (mac ? 8 : 2)) {
+			if (modkeys == (mac ? 8 : 6)) {
 				openAllUnread();
 				break;
 			}
@@ -353,7 +353,7 @@ function handleInputKeyDown(e) {
 			if (itemList.selectedLi) {
 				var id = itemList.selectedLi.id;
 				var item = getItemFromId(id);
-				openItem(item, e.shiftKey, e.altKey, isUnread(item));
+				openItem(item, e.shiftKey || e.ctrlKey, e.altKey, isUnread(item));
 			} else 
 			if (e.target.value) {
 				google(e.target.value);
@@ -458,7 +458,7 @@ function handleItemClick(e) {
 		performItemAction(action, itemLI);
 	} else {
 		var item = getItemFromId(itemLI.id);
-		openItem(item, e.shiftKey, e.altKey, isUnread(item));
+		openItem(item, e.shiftKey || e.ctrlKey, e.altKey, isUnread(item));
 	}
 }
 function handleItemMouseEnter(e) {

@@ -1,3 +1,43 @@
+function addOrArchivePage(tab) {
+	var item = getItemByUrl(tab.url);
+	if (item && item.state == '0') {
+		item.tabId = tab.id;
+		var messageText = {
+			'true'  : 'Page archived.',
+			'false' : 'There was a problem. Page not archived.'
+		};
+		markItemRead(item, function () {
+			chrome.tabs.sendMessage(tab.id, {
+				name : 'archiveResult',
+				data : {
+					action  : 'archive',
+					success : true,
+					text    : messageText[true]
+				} 
+			});
+			updateUIElementsOnTabSwitch(tab.id);
+		});
+	} else {
+		addTabToService(tab, function (success) {
+			console.log('success:', success);
+			var serviceName = services[localStorage.defaultService].name;
+			var messageText = {
+				'true'  : 'Page added to ' + serviceName + '.',
+				'false' : 'There was a problem. Page not added to ' + serviceName + '.'
+			};
+			chrome.tabs.sendMessage(tab.id, {
+				name : 'addResult',
+				data : {
+					action  : 'add',
+					success : success,
+					text    : messageText[success]
+				}
+			});
+			updateUIElementsOnTabSwitch(tab.id);
+		});
+	}
+	_gaq.push(['_trackEvent', 'User Actions', 'Add or Archive Item By Hotkey']);
+}
 function applyDefaultAction() {
 	switch (localStorage.defaultAction) {
 		case 'showlist':
@@ -89,6 +129,7 @@ function handleAddCommand(info, tab) {
 					'false' : 'There was a problem. Page not added.'
 				};
 				sendResultToTab(success, messageText[success]);
+				updateUIElementsOnTabSwitch(tab.id);
 			});
 		}
 	}
@@ -110,6 +151,14 @@ function handleArchiveCommand(info, tab) {
 	};
 	markItemRead(item, onSuccess);
 	_gaq.push(['_trackEvent', 'User Actions', 'Archive Item By Context Menu']);
+}
+function handleCommand(command) {
+	if (command == 'add-current-page') {
+		chrome.tabs.query({active:true}, function (tabs) {
+			var activeTab = tabs[0];
+			addOrArchivePage(activeTab);
+		});
+	}
 }
 function handleRemoveCommand(info, tab) {
 	var item = getItemByUrl(tab.url);
@@ -143,7 +192,8 @@ function handleMessage(message, sender, callback) {
 			callback(getAllTags());
 			break;
 		case 'passTabInfo':
-			chrome.tabs.getSelected(function (tab) {
+			chrome.tabs.query({active:true}, function (tabs) {
+				var tab = tabs[0];
 				var item = getItemByUrl(tab.url);
 				callback({
 					title : tab.title,
@@ -153,44 +203,7 @@ function handleMessage(message, sender, callback) {
 			});
 			break;
 		case 'addOrArchivePage':
-			var item = getItemByUrl(sender.tab.url);
-			if (item && item.state == '0') {
-				item.tabId = sender.tab.id;
-				var messageText = {
-					'true'  : 'Page archived.',
-					'false' : 'There was a problem. Page not archived.'
-				};
-				markItemRead(item, function () {
-					chrome.tabs.sendMessage(sender.tab.id, {
-						name : 'archiveResult',
-						data : {
-							action  : 'archive',
-							success : true,
-							text    : messageText[true]
-						} 
-					});
-					updateUIElementsOnTabSwitch(sender.tab.id);
-				});
-			} else {
-				addTabToService(sender.tab, function (success) {
-					console.log('success:', success);
-					var serviceName = services[localStorage.defaultService].name;
-					var messageText = {
-						'true'  : 'Page added to ' + serviceName + '.',
-						'false' : 'There was a problem. Page not added to ' + serviceName + '.'
-					};
-					chrome.tabs.sendMessage(sender.tab.id, {
-						name : 'addResult',
-						data : {
-							action  : 'add',
-							success : success,
-							text    : messageText[success]
-						}
-					});
-					updateUIElementsOnTabSwitch(sender.tab.id);
-				});
-			}
-			_gaq.push(['_trackEvent', 'User Actions', 'Add or Archive Item By Hotkey']);
+			addOrArchivePage(sender.tab);
 			break;
 		case 'addTabToService':
 			addTabToService(message.data, function (success) {
@@ -366,7 +379,8 @@ function openItem(item, background, altView, archiveOnTrigger) {
 		url : (altView ^ (ls.defaultPageView == 'reading')) ? services['pocket'].endpoints['read'] + item.id : item.url,
 		active : !background
 	};
-	chrome.tabs.getSelected(function (sTab) {
+	chrome.tabs.query({active:true}, function (tabs) {
+		var sTab = tabs[0];
 		if (!background && sTab.url === 'chrome://newtab/' || sTab.url === 'about:blank') {
 			chrome.tabs.update(tabProps, onTabCreate);
 		} else {
@@ -376,7 +390,7 @@ function openItem(item, background, altView, archiveOnTrigger) {
 }
 function openItems(items, altView) {
 	var openTabs = function (win) {
-		chrome.tabs.getSelected(function (sTab) {
+		chrome.tabs.query({active:true}, function (tabs) {
 			for (var i = items.length - 1; i >= 0; i--) {
 				openItem(items[i], true, altView, true);
 			}
@@ -510,6 +524,8 @@ chrome.runtime.onMessage.addListener(handleMessage);
 chrome.tabs.onActivated.addListener(handleTabActivate);
 chrome.tabs.onUpdated.addListener(handleTabUpdate);
 chrome.tabs.onRemoved.addListener(handleTabRemove);
+
+chrome.commands.onCommand.addListener(handleCommand);
 
 setButtonIcon(defaultIcon);
 cb.setBadgeBackgroundColor({color:'#ff4c62'});

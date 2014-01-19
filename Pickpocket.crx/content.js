@@ -116,9 +116,9 @@ function handleMessage(message, sender, callback) {
 var my = {};
 var cr = chrome.runtime;
 
-cr.sendMessage({ name: 'passStoredValues', data: ['hotkeyAdd'] }, function (response) {
+/*cr.sendMessage({ name: 'passStoredValues', data: ['hotkeyAdd'] }, function (response) {
 	for (var key in response)
 		my[key] = response[key];
 	document.addEventListener('keydown', handleKeyDown, false);
-});
+});*/
 cr.onMessage.addListener(handleMessage);
