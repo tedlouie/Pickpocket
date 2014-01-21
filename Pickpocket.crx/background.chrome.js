@@ -15,7 +15,7 @@ function addOrArchivePage(tab) {
 					text    : messageText[true]
 				} 
 			});
-			updateUIElementsOnTabSwitch(tab.id);
+			updateUIElements(tab.id);
 		});
 	} else {
 		addTabToService(tab, function (success) {
@@ -33,7 +33,7 @@ function addOrArchivePage(tab) {
 					text    : messageText[success]
 				}
 			});
-			updateUIElementsOnTabSwitch(tab.id);
+			updateUIElements(tab.id);
 		});
 	}
 	_gaq.push(['_trackEvent', 'User Actions', 'Add or Archive Item By Hotkey']);
@@ -129,7 +129,7 @@ function handleAddCommand(info, tab) {
 					'false' : 'There was a problem. Page not added.'
 				};
 				sendResultToTab(success, messageText[success]);
-				updateUIElementsOnTabSwitch(tab.id);
+				_.delay(updateUIElements, 500, tab.id);
 			});
 		}
 	}
@@ -139,7 +139,7 @@ function handleArchiveCommand(info, tab) {
 	var item = getItemByUrl(tab.url);
 	item.tabId = tab.id;
 	var onSuccess = function () {
-		updateUIElementsOnTabSwitch(tab.id);
+		updateUIElements(tab.id);
 		chrome.tabs.sendMessage(tab.id, {
 			name : 'archiveResult',
 			data : {
@@ -164,7 +164,7 @@ function handleRemoveCommand(info, tab) {
 	var item = getItemByUrl(tab.url);
 	item.tabId = tab.id;
 	var onSuccess = function () {
-		updateUIElementsOnTabSwitch(tab.id);
+		updateUIElements(tab.id);
 		chrome.tabs.sendMessage(tab.id, {
 			name : 'archiveResult',
 			data : {
@@ -221,7 +221,7 @@ function handleMessage(message, sender, callback) {
 						text    : messageText[success]
 					}
 				});
-				updateUIElementsOnTabSwitch(sender.tab.id);
+				updateUIElements(sender.tab.id);
 			});
 			break;
 		case 'openEditDialog':
@@ -253,7 +253,7 @@ function handleTabActivate(activeInfo) {
 			});
 		}
 	}
-	updateUIElementsOnTabSwitch(activeInfo.tabId);
+	updateUIElements(activeInfo.tabId);
 }
 function handleTabRemove(tabId, removeInfo) {
 	delete myOpenedTabs[tabId];
@@ -280,7 +280,7 @@ function handleTabUpdate(tabId, changeInfo, tab) {
 		}
 	}
 	if (changeInfo.status == 'loading') {
-		updateUIElementsOnTabSwitch(tabId);
+		updateUIElements(tabId);
 	}
 }
 function handleXhrErrorWithAlert(xhr, immediate) {
@@ -444,57 +444,73 @@ function showAlert(message, callback) {
 	if (callback) callback();
 }
 function toggleContextMenuItems() {
-	chrome.contextMenus.removeAll(function () { chrome.contextMenusAdded = false });
-	if (!chrome.contextMenusAdded && localStorage.addContextMenuItem == 'yes') {
+	chrome.contextMenus.removeAll();
+	if (localStorage.addContextMenuItem == 'yes') {
 		chrome.contextMenus.create({
-			id       : 'add_page',
+			id       : 'page-cmi-0',
 			title    : 'Add Page to ' + services[localStorage.defaultService].name,
 			contexts : ['page'],
 			onclick  : handleAddCommand
 		});
 		chrome.contextMenus.create({
-			id       : 'add_link',
+			id       : 'link-cmi',
 			title    : 'Add Link to ' + services[localStorage.defaultService].name,
 			contexts : ['link'],
 			onclick  : handleAddCommand
 		});
 	}
 }
-function updateAddPageCMItem(state) {
-	switch (state) {
-		case 'add':
-			chrome.contextMenus.update('add_page', {
-				title   : 'Add Page to ' + services[localStorage.defaultService].name,
+function updateContextMenu() {
+	if (localStorage.addContextMenuItem != 'yes')
+		return;
+	var svcName = services[localStorage.defaultService].name;
+	chrome.contextMenus.remove('page-cmi-1');
+	switch (activeTabInfo.ps) {
+		case 'absent':
+			chrome.contextMenus.update('page-cmi-0', {
+				title   : 'Add Page to ' + svcName + ' Queue',
 				onclick : handleAddCommand
-			})
+			});
 		break;
-		case 'archive':
-			chrome.contextMenus.update('add_page', {
-				title   : 'Archive Page on ' + services[localStorage.defaultService].name,
+		case 'unread':
+			chrome.contextMenus.update('page-cmi-0', {
+				title   : 'Move Page to ' + svcName + ' Archive',
 				onclick : handleArchiveCommand
-			})
+			});
+			chrome.contextMenus.create({
+				id       : 'page-cmi-1',
+				title    : 'Remove Page from ' + svcName,
+				contexts : ['page'],
+				onclick  : handleRemoveCommand
+			});
 		break;
-		case 'remove':
-			chrome.contextMenus.update('add_page', {
-				title   : 'Remove Page from ' + services[localStorage.defaultService].name,
-				onclick : handleRemoveCommand
-			})
+		case 'read':
+			chrome.contextMenus.update('page-cmi-0', {
+				title   : 'Move Page to ' + svcName + ' Queue',
+				onclick : handleAddCommand
+			});
+			chrome.contextMenus.create({
+				id       : 'page-cmi-1',
+				title    : 'Remove Page from ' + svcName,
+				contexts : ['page'],
+				onclick  : handleRemoveCommand
+			});
 		break;
 	}
 }
-function updateUIElementsOnTabSwitch(tabId) {
+function updateUIElements(tabId) {
 	chrome.tabs.get(tabId, function (tab) {
 		var matchingItem = getItemByUrl(tab.url);
 		if (matchingItem) {
 			activeTabInfo.ps = (matchingItem.state == '1') ? 'read' : 'unread';
 			if (localStorage.colorizeButton == 'yes')
 				setButtonIcon(getDefaultIconForActiveTab());
-			updateAddPageCMItem((matchingItem.state == '1') ? 'remove' : 'archive');
+			updateContextMenu();
 		} else {
 			activeTabInfo.ps = 'absent';
 			if (localStorage.colorizeButton == 'yes')
 				setButtonIcon(defaultIcon);
-			updateAddPageCMItem('add');
+			updateContextMenu();
 		}
 	});
 }
