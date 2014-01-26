@@ -35,21 +35,24 @@ function populatePrefs() {
 			inputs[i].addEventListener('change', savePref, false);
 	}
 	
+	var setText = function (e) {
+		document.getElementById(this.id + 'i').textContent = e.currentTarget.value;
+	};
+	var saveOldValue = function (e) {
+		e.currentTarget.oldValue = e.currentTarget.value;
+	};
+	var focusInput = function (e) {
+		e.currentTarget.querySelector('input').focus();
+	};
 	var sliders = document.querySelectorAll('input[type=range]');
 	for (var s, j = 0; j < sliders.length; j++) {
 		s = sliders[j];
 		document.getElementById(s.id + 'i').textContent = s.value;
-		s.addEventListener('change', function (e) {
-			document.getElementById(this.id + 'i').textContent = this.value;
-		}, false);
-		s.addEventListener('mousedown', function (e) {
-			this.oldValue = this.value;
-		}, false);
+		s.addEventListener('change', setText, false);
+		s.addEventListener('mousedown', saveOldValue, false);
 		s.addEventListener('mouseup', savePref, false);
 		s.addEventListener('keyup', savePref, false);
-		document.getElementById(s.id + 'label').addEventListener('click', function (e) {
-			this.querySelector('input').focus();
-		}, false);
+		document.getElementById(s.id + 'label').addEventListener('click', focusInput, false);
 	}
 	
 	document.getElementById('reauth').onclick = function () {

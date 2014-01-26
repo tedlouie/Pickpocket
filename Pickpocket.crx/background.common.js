@@ -44,7 +44,7 @@ var faviconRegex = /<link.* rel=['"](?:shortcut )?icon['"][^>]* href=['"]([^'"]+
 
 function XhrDataObj(type, members) {
 	if (type === 'pocket') {
-		this.consumer_key = services['pocket'].consumerkey;
+		this.consumer_key = services.pocket.consumerkey;
 		this.access_token = localStorage.oAuthAccessToken;
 	}
 	for (var k in members) {
@@ -85,7 +85,7 @@ function addLinkToService(url, callback) {
 						}
 					}
 					callback(true);
-				}, function onFailure() { callback(false) });
+				}, function onFailure() { callback(false); });
 			} else {
 				// console.log(this.status, this.statusText, this.responseText);
 				// console.log('Response headers:', this.getAllResponseHeaders());
@@ -101,7 +101,7 @@ function addLinkToService(url, callback) {
 	return;
 }
 function addTabToService(data, callback) {
-	var data = {
+	data = {
 		url   : data.url,
 		title : data.title,
 		tags  : data.tags || ''
@@ -111,7 +111,7 @@ function addTabToService(data, callback) {
 	submitItem(data, function onSuccess() {
 		runBackgroundUpdate();
 		callback(isNew && !dialogShown ? true : null);
-	}, function onFailure() { callback(false) });
+	}, function onFailure() { callback(false); });
 }
 function archiveItem(item, onSuccess, onFailure) {
 	// console.log('archiveItem:', item);
@@ -119,10 +119,10 @@ function archiveItem(item, onSuccess, onFailure) {
 }
 function archiveItems(items, onSuccess, onFailure) {
 	modifyItems(items, 'archive', [], {}, function () {
-		items.forEach(function (item) { item.state = '1' });
+		items.forEach(function (item) { item.state = '1'; });
 		var unreadCount = itemCache.filter(isUnread).length;
 		setBadge((unreadCount || '') + '');
-		onSuccess && onSuccess();
+		if (onSuccess) onSuccess();
 	}, onFailure);
 }
 function cacheFavicon(iconData, baseUrl) {
@@ -135,8 +135,8 @@ function convertPinsTo(method) {
 	updateItems(JSON.parse(localStorage.cacheTime), function onSuccess() {
 		var isPinned, repinItem, addAction, pinnedItems, actionsArray = [];
 		if (method == 'fave') {
-			isPinned  = function (item) { return item.tags.indexOf('pinned') > -1 };
-			repinItem = function (item) { item.faved = '1' };
+			isPinned  = function (item) { return item.tags.indexOf('pinned') > -1; };
+			repinItem = function (item) { item.faved = '1'; };
 			addAction = function (item) {
 				actionsArray.push({
 					action  : 'favorite',
@@ -145,8 +145,8 @@ function convertPinsTo(method) {
 			};
 		} else
 		if (method == 'tag') {
-			isPinned  = function (item) { return item.faved == '1' };
-			repinItem = function (item) { item.tags.push('pinned') };
+			isPinned  = function (item) { return item.faved == '1'; };
+			repinItem = function (item) { item.tags.push('pinned'); };
 			addAction = function (item) {
 				actionsArray.push({
 					action  : 'tags_add',
@@ -160,7 +160,7 @@ function convertPinsTo(method) {
 		var xhrData = new XhrDataObj('pocket', { actions: JSON.stringify(actionsArray) });
 		doXHR({
 			method    : 'POST',
-			url       : services[localStorage.defaultService].endpoints['send'],
+			url       : services[localStorage.defaultService].endpoints.send,
 			data      : xhrData,
 			onSuccess : function () {
 				pinnedItems.forEach(repinItem);
@@ -171,24 +171,22 @@ function convertPinsTo(method) {
 }
 function createItemArray(xhr, service) {
 	var itemArray = [];
-	if (service === 'pocket') {
-		var i, o, listObj = JSON.parse(xhr.responseText).list;
-		for (i in listObj) {
-			o = listObj[i];
-			if (o.given_url || o.resolved_url) {
-				itemArray.push({
-					id      : o.item_id,
-					url     : o.given_url || o.resolved_url,
-					title   : o.given_title || o.resolved_title,
-					blurb   : o.excerpt ? _.escape(o.excerpt) : '',
-					tags    : (o.tags) ? getTagArray(o) : [],
-					faved   : o.favorite,
-					time    : (o.time_added + '000') * 1,
-					state   : o.status,
-					service : 'pocket',
-					hits    : (localStorage[o.item_id] * 1) || 0
-				});
-			}
+	var i, o, listObj = JSON.parse(xhr.responseText).list;
+	for (i in listObj) {
+		o = listObj[i];
+		if (o.given_url || o.resolved_url) {
+			itemArray.push({
+				id      : o.item_id,
+				url     : o.given_url || o.resolved_url,
+				title   : o.given_title || o.resolved_title,
+				blurb   : o.excerpt ? _.escape(o.excerpt) : '',
+				tags    : (o.tags) ? getTagArray(o) : [],
+				faved   : o.favorite,
+				time    : (o.time_added + '000') * 1,
+				state   : o.status,
+				service : 'pocket',
+				hits    : (localStorage[o.item_id] * 1) || 0
+			});
 		}
 	}
 	return itemArray;
@@ -222,7 +220,7 @@ function defineFilter(name, filterObject) {
 function deleteItem(item, onSuccess, onFailure) {
 	// console.log('deleteItem:', item.id, item);
 	modifyItem(item, 'delete', null, function () {
-		itemCache = itemCache.filter(function (i) { return i.id != item.id });
+		itemCache = itemCache.filter(function (i) { return i.id != item.id; });
 		localStorage.itemCache = JSON.stringify(itemCache);
 		if (localStorage.checkInterval * 1) {
 			var unreadCount = itemCache.filter(isUnread).length;
@@ -344,13 +342,11 @@ function finishUpdatingItems(callback) {
 	if (callback) callback();
 }
 function getAllItemUrls(items, service) {
-	if (service === 'pocket') {
-		var getItemUrl = function (item) { return item.url };
-		return items.map(getItemUrl);
-	} else return [];
+	var getItemUrl = function (item) { return item.url; };
+	return items.map(getItemUrl);
 }
 function getAllTags() {
-	return _.chain(itemCache).map(function (item) { return item.tags }).flatten().sort().uniq(true).value();
+	return _.chain(itemCache).map(function (item) { return item.tags; }).flatten().sort().uniq(true).value();
 }
 function getBaseUrl(pageUrl) {
 	a.href = pageUrl;
@@ -392,7 +388,7 @@ function getFavicon(pageUrl, callback) {
 		callback(result);
 	};
 	var cachedIcon = getCachedFavicon(baseUrl);
-	if (cachedIcon == null) {
+	if (cachedIcon === null) {
 		getFaviconFromUrl(baseUrl + '/favicon.ico', firstCallback);
 	} else {
 		callback(cachedIcon);
@@ -410,8 +406,8 @@ function getFaviconFromUrl(iconUrl, callback) {
 						var result = e.target.result;
 						if (result == 'data:') result = '';
 						callback(result);
-					}
-					reader.readAsDataURL(blob)
+					};
+					reader.readAsDataURL(blob);
 				} else {
 					callback(null);
 				}
@@ -467,18 +463,16 @@ function getItemFromId(id) {
 	} return null;
 }
 function getItems(service, since, state, limit, callback, badCallback) {
-	if (service === 'pocket') {
-		var method = 'GET';
-		var pSince = (since) ? Math.round(since/1000) + '' : '';
-		var data = new XhrDataObj('pocket', {
-			count      : limit,
-			since      : pSince,
-			state      : (state || ''),
-			detailType : 'complete',
-			sort       : 'newest'
-		});
-	}
-	var url = services[service].endpoints['get'];
+	var method = 'GET';
+	var pSince = (since) ? Math.round(since/1000) + '' : '';
+	var data = new XhrDataObj('pocket', {
+		count      : limit,
+		since      : pSince,
+		state      : (state || ''),
+		detailType : 'complete',
+		sort       : 'newest'
+	});
+	var url = services[service].endpoints.get;
 	var startTime = new Date();
 	doXHR({
 		method    : method,
@@ -486,7 +480,7 @@ function getItems(service, since, state, limit, callback, badCallback) {
 		data      : data,
 		onSuccess : function (xhr) {
 			console.log('Download finished in', new Date() - startTime, 'ms');
-			callback && callback(createItemArray(xhr, service));
+			if (callback) callback(createItemArray(xhr, service));
 		},
 		onFailure : badCallback
 	});
@@ -579,18 +573,16 @@ function modifyItem(item, action, data, onSuccess, onFailure) {
 		alert('Error in archiving item ' + item.title);
 		return;
 	}
-	if (item.service === 'pocket') {
-		var method = 'POST';
-		var actionObject = {
-			action  : action,
-			item_id : item.id
-		};
-		for (var key in data) {
-			actionObject[key] = data[key];
-		}
-		var xhrData = new XhrDataObj('pocket', { actions: JSON.stringify([actionObject]) });
+	var method = 'POST';
+	var actionObject = {
+		action  : action,
+		item_id : item.id
+	};
+	for (var key in data) {
+		actionObject[key] = data[key];
 	}
-	var url = services[item.service].endpoints['send'];
+	var xhrData = new XhrDataObj('pocket', { actions: JSON.stringify([actionObject]) });
+	var url = services[item.service].endpoints.send;
 	doXHR({
 		method    : method,
 		url       : url,
@@ -603,7 +595,7 @@ function modifyItems(items, action, props, data, onSuccess, onFailure) {
 	var actionObjects = items.map(makeActionObject, { action:action, props:props, data:data });
 	// console.log('actionObjects:', actionObjects);
 	var xhrData = new XhrDataObj('pocket', { actions: JSON.stringify(actionObjects) });
-	var url = services['pocket'].endpoints['send'];
+	var url = services.pocket.endpoints.send;
 	doXHR({
 		method    : 'POST',
 		url       : url,
@@ -675,13 +667,11 @@ function scheduleCheckForNewItems() {
 function submitItem(data, callback, badCallback) {
 	lastSubmittedData = data;
 	var service = localStorage.defaultService;
-	if (service === 'pocket') {
-		var method = 'POST';
-		var xhrData = new XhrDataObj('pocket', data);
-	}
+	var method = 'POST';
+	var xhrData = new XhrDataObj('pocket', data);
 	doXHR({
 		method    : method,
-		url       : services[service].endpoints['add'],
+		url       : services[service].endpoints.add,
 		data      : xhrData,
 		onSuccess : callback,
 		onFailure : badCallback
@@ -694,8 +684,10 @@ function tagIsInFilter(iTag) {
 }
 function updateItems(since, callback, badCallback) {
 	var downloadLimit = localStorage.downloadLimit * 1;
-	(downloadLimit > 0) || (downloadLimit = defaults.downloadLimit * 1);
-	(localStorage.reloadOnUpdate == 'yes') && (since = null);
+	if (downloadLimit <= 0) 
+		downloadLimit = defaults.downloadLimit * 1;
+	if (localStorage.reloadOnUpdate == 'yes') 
+		since = null;
 	if (!since || !itemCache || !itemCache.length) {
 		getItems(localStorage.defaultService, null, 'unread', downloadLimit, function (items) {
 			// console.log('Unread items:', items);

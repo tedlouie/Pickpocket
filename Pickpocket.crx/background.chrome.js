@@ -44,7 +44,7 @@ function applyDefaultAction() {
 			cb.setPopup({popup:'list.html'});
 		break;
 		case 'opentabs':
-			cb.setPopup({popup:''})
+			cb.setPopup({popup:''});
 			cb.onClicked.addListener(function () {
 				runFilterSet(null, function () {
 					showAlert('You have no unread links.');
@@ -52,7 +52,7 @@ function applyDefaultAction() {
 			});
 		break;
 		case 'openrandom':
-			cb.setPopup({popup:''})
+			cb.setPopup({popup:''});
 			cb.onClicked.addListener(function () {
 				var rurItem = getRandomUnreadItem();
 				if (rurItem) {
@@ -83,7 +83,7 @@ function getConfirmation(question, callback) {
 }
 function getDefaultIconForActiveTab() {
 	switch (activeTabInfo.ps) {
-		case 'read'   : return { '19': 'icon-19-c.png', '38': 'icon-19-c@2x.png' }
+		case 'read'   : return { '19': 'icon-19-c.png', '38': 'icon-19-c@2x.png' };
 		case 'unread' : return { '19': 'icon-19-cc.png', '38': 'icon-19-cc@2x.png' };
 		default       : return defaultIcon;
 	}
@@ -264,16 +264,17 @@ function handleTabRemove(tabId, removeInfo) {
 	}
 }
 function handleTabUpdate(tabId, changeInfo, tab) {
+	var item;
 	if (tabsWatchedForChange[tabId]) {
 		if (changeInfo.status === 'complete') {
-			var item = tabsWatchedForChange[tabId];
+			item = tabsWatchedForChange[tabId];
 			tabsWatchedForClose[tabId] = item;
 			delete tabsWatchedForChange[tabId];
 			// console.log('Added tab to tabsWatchedForClose:', tabId);
 		}
 	} else
 	if (tabsWatchedForClose[tabId]) {
-		var item = tabsWatchedForClose[tabId];
+		item = tabsWatchedForClose[tabId];
 		item.tabId = tabId;
 		if (changeInfo.url !== item.url && changeInfo.status === 'loading') {
 			markItemRead(item);
@@ -340,7 +341,7 @@ function markItemRead(item, onSuccess, onFailure) {
 		}
 		if (localStorage.checkInterval * 1)
 			setBadge(-1);
-		onSuccess && onSuccess(res);
+		if (onSuccess) onSuccess(res);
 		// console.log('Archive successful.');
 	}, onFailure || handleXhrErrorWithAlert);
 }
@@ -350,7 +351,7 @@ function markItemUnread(item, onSuccess, onFailure) {
 		item.state = '0';
 		if (localStorage.checkInterval * 1)
 			setBadge(1);
-		onSuccess && onSuccess();
+		if (onSuccess) onSuccess(res);
 		// console.log('Unarchive successful.');
 	}, onFailure || handleXhrErrorWithAlert);
 }
@@ -376,7 +377,7 @@ function openItem(item, background, altView, archiveOnTrigger) {
 		}
 	};
 	var tabProps = {
-		url : (altView ^ (ls.defaultPageView == 'reading')) ? services['pocket'].endpoints['read'] + item.id : item.url,
+		url : (altView ^ (ls.defaultPageView == 'reading')) ? services.pocket.endpoints.read + item.id : item.url,
 		active : !background
 	};
 	chrome.tabs.query({active:true}, function (tabs) {
@@ -403,7 +404,7 @@ function openItems(items, altView) {
 	}
 }
 function setBadge(input) {
-	if (input == null) {
+	if (input === undefined) {
 		var unreadCount = itemCache.filter(isUnread).length;
 		input = unreadCount ? unreadCount + '' : '';
 	}
@@ -421,12 +422,12 @@ function setButtonIcon(filename) {
 	cb.setIcon({path:filename});
 }
 function setReportForXhrError(xhr) {
-	var message = '\
-		<p>' + services[localStorage.defaultService].name + ' returned the following error message:</p>\
-		<blockquote>\
-			<p><b><code>' + xhr.getResponseHeader('Status') + '</code></b></p>\
-			<p><code>' + xhr.getResponseHeader('X-Error') + '</code></p>\
-		</blockquote>';
+	var message = 
+		'<p>' + services[localStorage.defaultService].name + ' returned the following error message:</p>' +
+		'<blockquote>' +
+			'<p><b><code>' + xhr.getResponseHeader('Status') + '</code></b></p>' +
+			'<p><code>' + xhr.getResponseHeader('X-Error') + '</code></p>' +
+		'</blockquote>';
 	var callback = (xhr.status == 401) ? beginAuthProcess : null;
 	var forceOK = (xhr.status == 401) ? true : false;
 	setReportObject(message, callback, false, forceOK);
