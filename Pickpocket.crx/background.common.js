@@ -121,8 +121,7 @@ function archiveItem(item, onSuccess, onFailure) {
 function archiveItems(items, onSuccess, onFailure) {
 	modifyItems(items, 'archive', [], {}, function () {
 		items.forEach(function (item) { item.state = '1'; });
-		var unreadCount = itemCache.filter(isUnread).length;
-		setBadge((unreadCount || '') + '');
+		updateBadge();
 		if (onSuccess) onSuccess();
 	}, onFailure);
 }
@@ -224,8 +223,7 @@ function deleteItem(item, onSuccess, onFailure) {
 		itemCache = itemCache.filter(function (i) { return i.id != item.id; });
 		localStorage.itemCache = JSON.stringify(itemCache);
 		if (localStorage.checkInterval * 1) {
-			var unreadCount = itemCache.filter(isUnread).length;
-			setBadge((unreadCount || '') + '');
+			updateBadge();
 		}
 		if (onSuccess) onSuccess();
 	}, onFailure);
@@ -337,8 +335,7 @@ function finishUpdatingItems(callback) {
 	localStorage.cacheTime = new Date().getTime();
 	// console.log('Updated itemCache.length:', itemCache.length);
 	if (localStorage.checkInterval * 1) {
-		var unreadCount = itemCache.filter(isUnread).length;
-		setBadge((unreadCount || '') + '');
+		updateBadge();
 	}
 	if (callback) callback();
 }
@@ -530,6 +527,12 @@ function initialize() {
 function isUnread(item) {
 	return item.state == '0';
 }
+function isUnreadAndUntagged(item) {
+	return isUnread(item) && isUntagged(item);
+}
+function isUntagged(item) {
+	return !item.tags || !item.tags.length;
+}
 function itemPassesFilter(item) {
 	var filterSet = this;
 	var itemPassesFilterSet = false;
@@ -682,6 +685,11 @@ function tagIsInFilter(iTag) {
 	return this.some(function (fTag) {
 		return iTag == fTag;
 	});
+}
+function updateBadge() {
+	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
+	var unreadCount = itemCache.filter(filterFunc).length;
+	setBadge((unreadCount || '') + '');
 }
 function updateItems(since, callback, badCallback) {
 	var downloadLimit = localStorage.downloadLimit * 1;
