@@ -18,8 +18,9 @@ function initialize() {
 	document.getElementById('acm').checked = (localStorage.addContextMenuItem == 'yes');
 	document.getElementById('net').checked = (localStorage.newExcludesTagged == 'yes');
 	document.getElementById('rou').checked = (localStorage.reloadOnUpdate == 'yes');
-	document.getElementById('ci').value    = (localStorage.checkInterval * 1) / 60;
-	document.getElementById('dl').value    = (localStorage.downloadLimit * 1);
+	document.getElementById('ci').value    = parseInt(localStorage.checkInterval) / 60;
+	document.getElementById('ol').value    = parseInt(localStorage.openLimit);
+	document.getElementById('dl').value    = parseInt(localStorage.downloadLimit);
 		
 	if (localStorage.defaultAction === 'opentabs') {
 		document.getElementById('unw').disabled = false;
@@ -43,11 +44,13 @@ function initialize() {
 	document.getElementById('hkrb').addEventListener('click', resetHotkey, false);
 	
 	var sliders = document.querySelectorAll('input[type=range]');
-	for (var s, j = 0; j < sliders.length; j++) {
+	for (var s, text, j = 0; j < sliders.length; j++) {
 		s = sliders[j];
-		document.getElementById(s.id + 'i').textContent = s.value;
+		text = (s.id == 'ol' && s.value == 0) ? 'all' : s.value;
+		document.getElementById(s.id + 'i').textContent = text;
 		s.addEventListener('change', function (e) {
-			document.getElementById(this.id + 'i').textContent = this.value;
+			var text = (this.id == 'ol' && this.value == 0) ? 'all' : this.value;
+			document.getElementById(this.id + 'i').textContent = text;
 		}, false);
 		s.addEventListener('mousedown', function (e) {
 			this.oldValue = this.value;

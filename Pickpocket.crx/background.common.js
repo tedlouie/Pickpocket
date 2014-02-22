@@ -9,6 +9,7 @@ var defaults = {
 	downloadLimit      : '1000',
 	loggingEnabled     : 'no',
 	newExcludesTagged  : 'no',
+	openLimit          : '10',
 	pinMethod          : 'fave',
 	reloadOnUpdate     : 'no',
 	showAddDialog      : 'no',

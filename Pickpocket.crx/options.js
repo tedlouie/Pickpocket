@@ -21,8 +21,9 @@ function populatePrefs() {
 	document.getElementById('uai').checked = (localStorage.useAlternateIcon == 'yes');
 	document.getElementById('acm').checked = (localStorage.addContextMenuItem == 'yes');
 	document.getElementById('rou').checked = (localStorage.reloadOnUpdate == 'yes');
-	document.getElementById('ci').value    = (localStorage.checkInterval * 1) / 60;
-	document.getElementById('dl').value    = (localStorage.downloadLimit * 1);
+	document.getElementById('ci').value    = parseInt(localStorage.checkInterval) / 60;
+	document.getElementById('ol').value    = parseInt(localStorage.openLimit);
+	document.getElementById('dl').value    = parseInt(localStorage.downloadLimit);
 	
 	if (localStorage.defaultAction == 'opentabs') {
 		document.getElementById('unw').disabled = false;
@@ -31,12 +32,13 @@ function populatePrefs() {
 	
 	var inputs = document.querySelectorAll('input');
 	for (var i = 0; i < inputs.length; i++) {
-		if (inputs[i].type !== 'range')
+		if (inputs[i].type != 'range')
 			inputs[i].addEventListener('change', savePref, false);
 	}
 	
 	var setText = function (e) {
-		document.getElementById(this.id + 'i').textContent = e.currentTarget.value;
+		var text = (this.id == 'ol' && this.value == 0) ? 'all' : this.value;
+		document.getElementById(this.id + 'i').textContent = text;
 	};
 	var saveOldValue = function (e) {
 		e.currentTarget.oldValue = e.currentTarget.value;
@@ -45,9 +47,10 @@ function populatePrefs() {
 		e.currentTarget.querySelector('input').focus();
 	};
 	var sliders = document.querySelectorAll('input[type=range]');
-	for (var s, j = 0; j < sliders.length; j++) {
+	for (var s, text, j = 0; j < sliders.length; j++) {
 		s = sliders[j];
-		document.getElementById(s.id + 'i').textContent = s.value;
+		text = (s.id == 'ol' && s.value == 0) ? 'all' : s.value;
+		document.getElementById(s.id + 'i').textContent = text;
 		s.addEventListener('change', setText, false);
 		s.addEventListener('mousedown', saveOldValue, false);
 		s.addEventListener('mouseup', savePref, false);

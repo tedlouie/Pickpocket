@@ -131,8 +131,13 @@ var itemList = {
 					messageSpan.innerHTML = 'No new links';
 				}
 				if (unreadLength) {
-					openAllButton.style.display = 'inline-block';
 					archiveAllButton.style.display = 'inline-block';
+					openAllButton.style.display = 'inline-block';
+					if (openLimit && openLimit < unreadLength) {
+						openAllButton.title = 'Open first ' + openLimit + ' unread links';
+					} else {
+						openAllButton.title = 'Open all unread links';
+					}
 				}
 			}
 		} else 
@@ -153,7 +158,7 @@ var itemList = {
 			this.updateHeight(items.length);
 			this.showFavicons();
 		}
-	}
+	},
 };
 
 function initialize() {
@@ -168,6 +173,7 @@ function initialize() {
 	maxWinHeight    = 600;
 	sortOldestFirst = (localStorage.sortOldestFirst == 'yes');
 	usingFave       = localStorage.pinMethod == 'fave';
+	openLimit       = parseInt(localStorage.openLimit);
 	defaultListType = 'new or pinned';
 	defaultFilter   = getDefaultFilter();
 	
@@ -489,7 +495,7 @@ function isArchived(item) {
 	return item.state == '1';
 }
 function isPinned(item) {
-	if (localStorage.pinMethod == 'fave') {
+	if (usingFave) {
 		return (item.faved == '1');
 	} else return item.tags.indexOf('pinned') > -1;
 }
@@ -517,7 +523,9 @@ function isUntagged(item) {
 function openAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
 	var unreadItems = itemList.items.filter(filterFunc);
-	if (arg == 'confirmed' || unreadItems.length < 10) {
+	if (openLimit)
+		unreadItems = unreadItems.slice(0, openLimit);
+	if (arg == 'confirmed' || openLimit || unreadItems.length < 10) {
 		hc.openItems(unreadItems);
 		_gaq.push(['_trackEvent', 'User Actions', 'Open All New From Popup']);
 		goAway();
@@ -645,7 +653,7 @@ function toggleArchived(item, callback) {
 }
 function togglePinned(item, callback) {
 	var action, data = null;
-	if (localStorage.pinMethod == 'fave') {
+	if (usingFave) {
 		action = (item.faved == '1') ? 'unfavorite' : 'favorite';
 		item.faved = (item.faved == '1') ? '0' : '1';
 	} else {
