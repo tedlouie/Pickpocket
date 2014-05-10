@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Extension Updates</key>
+	<array>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.canisbos.pickpocket</string>
+			<key>CFBundleShortVersionString</key>
+			<string>3.3.6</string>
+			<key>CFBundleVersion</key>
+			<string>90</string>
+			<key>Developer Identifier</key>
+			<string>ZANVZTSER6</string>
+			<key>URL</key>
+			<string>https://github.com/canisbos/Pickpocket/blob/master/dist/Pickpocket.safariextz?raw=true</string>
+		</dict>
+	</array>
+</dict>
+</plist>
