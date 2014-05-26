@@ -348,6 +348,12 @@ function handleInputKeyDown(e) {
 			} break;
 		case  13:    // return
 			e.preventDefault();
+			var regexResult = /^setPref\( *['"](\w+)['"] *, *['"]?(\w+)['"]? *\)/.exec(e.target.value);
+			if (regexResult) {
+				setPref(regexResult[1], regexResult[2]);
+				e.target.value = '';
+				break;
+			}			
 			if (modkeys == (mac ? 8 : 6)) {
 				openAllUnread();
 				break;
@@ -360,7 +366,7 @@ function handleInputKeyDown(e) {
 				var id = itemList.selectedLi.id;
 				var item = getItemFromId(id);
 				openItem(item, e.shiftKey || e.ctrlKey, e.altKey, isUnread(item));
-			} else 
+			} else
 			if (e.target.value) {
 				google(e.target.value);
 			} break;
@@ -523,8 +529,14 @@ function isUntagged(item) {
 function openAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
 	var unreadItems = itemList.items.filter(filterFunc);
-	if (openLimit)
-		unreadItems = unreadItems.slice(0, openLimit);
+	if (openLimit) {
+		var oof = localStorage.openOldestFirst;
+		if (oof == 'true' || oof == 'yes' || oof == 1) {
+			unreadItems = unreadItems.slice(unreadItems.length - openLimit);
+		} else {
+			unreadItems = unreadItems.slice(0, openLimit);
+		}
+	}
 	if (arg == 'confirmed' || openLimit || unreadItems.length < 10) {
 		hc.openItems(unreadItems);
 		_gaq.push(['_trackEvent', 'User Actions', 'Open All New From Popup']);
@@ -624,6 +636,10 @@ function returnMatchingItems(keys, newOnly) {
 		}
 	}
 	return matches;
+}
+function setPref(key, value) {
+	console.log('Setting pref "' + key + '" to:', value);
+	localStorage[key] = value;
 }
 function showMatchingItems(selectedIndex) {
 	var input = inputField.value.replace(/\/\s+/,'/').replace(/\:\s+/,':');
