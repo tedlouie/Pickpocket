@@ -249,9 +249,6 @@ function initializeSettings() {
 	if (lastVersion < 24) {
 		se.settings.archiveTrigger = se.settings.archiveTrigger.replace(/'/g, '');
 	}
-	if (lastVersion < 25) {
-		se.settings.checkInterval = 300;
-	}
 	if (lastVersion < 39) {
 		se.settings.hotkey = defaultHotkey;
 	}

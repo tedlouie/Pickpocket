@@ -94,6 +94,7 @@ function savePref() {
 			if (control.name == 'unreadBadge') {
 				document.getElementById('ci').disabled = !control.checked;
 				document.getElementById('cilabel').className = control.checked ? '' : 'disabled';
+				hc.scheduleCheckForNewItems();
 			} else
 			if (control.name == 'addContextMenuItem') {
 				hc.toggleContextMenuItems();
@@ -113,7 +114,7 @@ function savePref() {
 				if (event.which < 37 || event.which > 40)
 					break;
 			if (control.name == 'checkInterval') {
-				localStorage[control.name] = (control.value > 0) ? control.value * 60 : '';
+				localStorage[control.name] = control.value * 60;
 				hc.scheduleCheckForNewItems();
 			} else
 				localStorage[control.name] = control.value;
