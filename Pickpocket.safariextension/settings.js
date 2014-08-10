@@ -14,6 +14,7 @@ function initialize() {
 	document.getElementById('pm0').checked = (localStorage.pinMethod == 'fave');
 	document.getElementById('pm1').checked = (localStorage.pinMethod == 'tag');
 	document.getElementById('unw').checked = (localStorage.useNewWindow == 'yes');
+	document.getElementById('sof').checked = (localStorage.sortOldestFirst == 'yes');
 	document.getElementById('car').checked = (localStorage.confirmArchive == 'true');
 	document.getElementById('acm').checked = (localStorage.addContextMenuItem == 'yes');
 	document.getElementById('net').checked = (localStorage.newExcludesTagged == 'yes');
