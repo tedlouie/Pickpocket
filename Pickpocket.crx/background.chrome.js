@@ -329,7 +329,8 @@ function initializeSettings() {
 		localStorage.showAddDialog = 'no';
 	}
 	if (lastVersion < 17) {
-		if (parseInt(localStorage.checkInterval) == 0) {
+		if (localStorage.checkInterval == '') {
+			localStorage.checkInterval = '60';
 			localStorage.unreadBadge = 'no';
 		}
 	}

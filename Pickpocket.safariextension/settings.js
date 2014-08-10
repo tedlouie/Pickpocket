@@ -29,7 +29,7 @@ function initialize() {
 	}
 	if (localStorage.unreadBadge == 'no') {
 		document.getElementById('ci').disabled = true;
-		document.getElementById('ci_label').className = 'disabled';
+		document.getElementById('cilabel').className = 'disabled';
 	}
 	if (localStorage.archiveTrigger == 'leave') {
 		document.getElementById('car').disabled = false;
@@ -177,7 +177,7 @@ function savePref() {
 			localStorage[control.name] = control.checked ? 'yes' : 'no';
 			if (control.name == 'unreadBadge') {
 				document.getElementById('ci').disabled = !control.checked;
-				document.getElementById('ci_label').className = control.checked ? '' : 'disabled';
+				document.getElementById('cilabel').className = control.checked ? '' : 'disabled';
 			}
 		break;
 		case 'range':
