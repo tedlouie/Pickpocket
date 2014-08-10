@@ -328,12 +328,7 @@ function initializeSettings() {
 	if (lastVersion < 16) {
 		localStorage.showAddDialog = 'no';
 	}
-	if (lastVersion < 17) {
-		if (parseInt(localStorage.checkInterval) == 0) {
-			localStorage.unreadBadge = 'no';
-		}
-	}
-	localStorage.lastVersion = 17;
+	localStorage.lastVersion = 16;
 }
 function markItemRead(item, onSuccess, onFailure) {
 	// console.log('Archiving:', item.url);
@@ -344,7 +339,7 @@ function markItemRead(item, onSuccess, onFailure) {
 			delete tabsWatchedForFocus[item.tabId];
 			delete item.tabId;
 		}
-		if (localStorage.unreadBadge == 'yes')
+		if (localStorage.checkInterval * 1)
 			setBadge(-1);
 		if (onSuccess) onSuccess(res);
 		// console.log('Archive successful.');
@@ -354,7 +349,7 @@ function markItemUnread(item, onSuccess, onFailure) {
 	// console.log('Unarchiving:', item.url);
 	modifyItem(item, 'readd', null, function () {
 		item.state = '0';
-		if (localStorage.unreadBadge == 'yes')
+		if (localStorage.checkInterval * 1)
 			setBadge(1);
 		if (onSuccess) onSuccess(res);
 		// console.log('Unarchive successful.');

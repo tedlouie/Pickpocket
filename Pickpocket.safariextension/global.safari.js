@@ -281,12 +281,7 @@ function initializeSettings() {
 		localStorage.addHotkey = defaults.addHotkey;
 		localStorage.archiveHotkey = defaults.archiveHotkey;
 	}
-	if (lastVersion < 91) {
-		if (parseInt(localStorage.checkInterval) == 0) {
-			localStorage.unreadBadge = 'no';
-		}
-	}
-	localStorage.lastVersion = 91;
+	localStorage.lastVersion = 62;
 }
 function markItemRead(item, onSuccess, onFailure) {
 	console.log('Archiving:', item.url);
@@ -294,7 +289,7 @@ function markItemRead(item, onSuccess, onFailure) {
 	modifyItem(item, 'archive', null, function (res) {
 		item.state = '1';
 		item.markedAsRead = true;
-		if (localStorage.unreadBadge == 'yes')
+		if (localStorage.checkInterval * 1)
 			setBadge(getMainButtonForActiveWindow().badge - 1);
 		onSuccess && onSuccess(res);
 		console.log('Archive successful.');
@@ -304,7 +299,7 @@ function markItemUnread(item, onSuccess, onFailure) {
 	console.log('Unarchiving:', item.url);
 	modifyItem(item, 'readd', null, function () {
 		item.state = '0';
-		if (localStorage.unreadBadge == 'yes')
+		if (localStorage.checkInterval * 1)
 			setBadge(getMainButtonForActiveWindow().badge + 1);
 		onSuccess && onSuccess();
 		console.log('Unarchive successful.');

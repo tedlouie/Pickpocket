@@ -21,7 +21,6 @@ function populatePrefs() {
 	document.getElementById('uai').checked = (localStorage.useAlternateIcon == 'yes');
 	document.getElementById('acm').checked = (localStorage.addContextMenuItem == 'yes');
 	document.getElementById('rou').checked = (localStorage.reloadOnUpdate == 'yes');
-	document.getElementById('urb').checked = (localStorage.unreadBadge == 'yes');
 	document.getElementById('ci').value    = parseInt(localStorage.checkInterval) / 60;
 	document.getElementById('ol').value    = parseInt(localStorage.openLimit);
 	document.getElementById('dl').value    = parseInt(localStorage.downloadLimit);
@@ -29,10 +28,6 @@ function populatePrefs() {
 	if (localStorage.defaultAction == 'opentabs') {
 		document.getElementById('unw').disabled = false;
 		document.getElementById('unw_label').className = '';
-	}
-	if (localStorage.unreadBadge == 'no') {
-		document.getElementById('ci').disabled = true;
-		document.getElementById('ci_label').className = 'disabled';
 	}
 	
 	var inputs = document.querySelectorAll('input');
@@ -91,10 +86,6 @@ function savePref() {
 		break;
 		case 'checkbox':
 			localStorage[control.name] = (control.checked) ? 'yes' : 'no';
-			if (control.name == 'unreadBadge') {
-				document.getElementById('ci').disabled = !control.checked;
-				document.getElementById('ci_label').className = control.checked ? '' : 'disabled';
-			} else
 			if (control.name == 'addContextMenuItem') {
 				hc.toggleContextMenuItems();
 			} else

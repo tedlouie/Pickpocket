@@ -14,7 +14,6 @@ var defaults = {
 	reloadOnUpdate     : 'no',
 	showAddDialog      : 'no',
 	sortOldestFirst    : 'no',
-	unreadBadge        : 'yes',
 	useAlternateIcon   : 'no',
 	useNewWindow       : 'no',
 	filterSets : JSON.stringify({
@@ -223,7 +222,7 @@ function deleteItem(item, onSuccess, onFailure) {
 	modifyItem(item, 'delete', null, function () {
 		itemCache = itemCache.filter(function (i) { return i.id != item.id; });
 		localStorage.itemCache = JSON.stringify(itemCache);
-		if (localStorage.unreadBadge == 'yes') {
+		if (localStorage.checkInterval * 1) {
 			updateBadge();
 		}
 		if (onSuccess) onSuccess();
@@ -335,7 +334,7 @@ function finishUpdatingItems(callback) {
 	localStorage.itemCache = JSON.stringify(itemCache);
 	localStorage.cacheTime = new Date().getTime();
 	// console.log('Updated itemCache.length:', itemCache.length);
-	if (localStorage.unreadBadge == 'yes') {
+	if (localStorage.checkInterval * 1) {
 		updateBadge();
 	}
 	if (callback) callback();
@@ -663,8 +662,8 @@ function scheduleCheckForNewItems() {
 		clearInterval(window.checkTimer);
 		window.checkTimer = null;
 	}
-	if (localStorage.unreadBadge == 'yes') {
-		window.checkTimer = setInterval(runBackgroundUpdate, parseInt(localStorage.checkInterval) * 1000);
+	if (localStorage.checkInterval * 1) {
+		window.checkTimer = setInterval(runBackgroundUpdate, localStorage.checkInterval * 1000);
 	} else {
 		setBadge('');
 	}
