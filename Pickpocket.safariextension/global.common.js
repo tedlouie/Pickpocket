@@ -55,9 +55,10 @@ function XhrDataObj(type, members) {
 }
 function addLinkToService(url, callback) {
 	var xhr = new XMLHttpRequest();
+	var timeout = null;
 	xhr.onreadystatechange = function () {
 		if (this.readyState == 4) {
-			clearTimeout(xhr.timeout);
+			timeout && clearTimeout(timeout);
 			if (this.status == 200) {
 				var html = this.responseText;
 				var titleExec = /<title[^>]*>([^<]+)<\/title>/.exec(html);
@@ -96,7 +97,8 @@ function addLinkToService(url, callback) {
 	};
 	xhr.open('GET', url, true);
 	xhr.send();
-	xhr.timeout = setTimeout(function () {
+	timeout = setTimeout(function () {
+		timeout = null;
 		xhr.abort();
 		console.log('XHR timed out getting "' + url + '"');
 	}, 15000);
@@ -244,13 +246,15 @@ function doXHR(args) {
 	if (args.data) args.data = dataObj2Str(args.data);
 	var callingPocket = /(getpocket)|(readitlaterlist)\.com/.test(args.url);
 	var xhr = new XMLHttpRequest();
+	var timeout = null;
+	var waiting = null;
 	xhr.onreadystatechange = function () {
 		if (this.readyState === 4) {
 			// console.log("Response time: " + ((t[1] = new Date()) - t[0]) + "ms");
-			clearTimeout(xhr.timeout);
-			if (xhr.waiting) {
-				clearTimeout(xhr.waiting);
-				delete xhr.waiting;
+			timeout && clearTimeout(timeout);
+			if (waiting) {
+				clearTimeout(waiting);
+				waiting = null;
 				if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
 				if (safari && waitingButton) animateButton(waitingButton, timerID, false);
 			}
@@ -297,14 +301,16 @@ function doXHR(args) {
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(args.data || null);
 	var t = []; t[0] = new Date();
-	xhr.waiting = setTimeout(function () {
+	waiting = setTimeout(function () {
+		waiting = null;
 		if (chrome) setButtonIcon(waitingIcon); else
 		if (safari) {
 			waitingButton = getMainButtonForActiveWindow();
 			animateButton(waitingButton, timerID, true);
 		}
 	}, 5000);
-	xhr.timeout = setTimeout(function () {
+	timeout = setTimeout(function () {
+		timeout = null;
 		if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
 		if (safari && waitingButton) animateButton(waitingButton, timerID, false);
 		if (args.onFailure) {
