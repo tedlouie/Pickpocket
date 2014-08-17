@@ -11,10 +11,11 @@ function doXHRPost(url, data, successHandler, errorHandler) {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function () {
 		if (this.readyState === 4) {
-			clearTimeout(xhr.timeout);
-			if (xhr.waiting) {
-				clearTimeout(xhr.waiting);
-				xhr.waiting = null;
+			clearTimeout(timeout);
+			timeout = null;
+			if (waiting) {
+				clearTimeout(waiting);
+				waiting = null;
 				showStatus('finished');
 			}
 			if (this.status === 200) {
@@ -49,10 +50,12 @@ function doXHRPost(url, data, successHandler, errorHandler) {
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF8");
 	xhr.setRequestHeader("X-Accept", "application/json");
 	xhr.send(data || null);
-	xhr.waiting = setTimeout(function () {
+	waiting = setTimeout(function () {
+		waiting = null;
 		showStatus('waiting');
 	}, 2000);
-	xhr.timeout = setTimeout(function () {
+	timeout = setTimeout(function () {
+		timeout = null;
 		xhr.abort();
 		if (errorHandler) {
 			errorHandler(xhr);
