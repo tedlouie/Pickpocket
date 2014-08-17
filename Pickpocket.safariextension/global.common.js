@@ -246,8 +246,30 @@ function doXHR(args) {
 	if (args.data) args.data = dataObj2Str(args.data);
 	var callingPocket = /(getpocket)|(readitlaterlist)\.com/.test(args.url);
 	var xhr = new XMLHttpRequest();
-	var timeout = null;
-	var waiting = null;
+	var waiting = setTimeout(function () {
+		waiting = null;
+		if (chrome) setButtonIcon(waitingIcon); else
+		if (safari) {
+			waitingButton = getMainButtonForActiveWindow();
+			animateButton(waitingButton, timerID, true);
+		}
+	}, 5000);
+	var timeout = setTimeout(function () {
+		timeout = null;
+		if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
+		if (safari && waitingButton) animateButton(waitingButton, timerID, false);
+		if (args.onFailure) {
+			args.onFailure(xhr);
+		} else {
+			var sName = services[localStorage.defaultService].name;
+			if (chrome) showAlert('Pickpocket could not connect to your ' + sName + ' account.'); else
+			if (safari) {
+				showReport('Pickpocket could not connect to your ' + sName + ' account.');
+			}
+		}
+		xhr.abort();
+	}, 15000);
+	// var t = []; t[0] = new Date();
 	xhr.onreadystatechange = function () {
 		if (this.readyState === 4) {
 			// console.log("Response time: " + ((t[1] = new Date()) - t[0]) + "ms");
@@ -300,30 +322,6 @@ function doXHR(args) {
 	if (args.method === 'POST')
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(args.data || null);
-	var t = []; t[0] = new Date();
-	waiting = setTimeout(function () {
-		waiting = null;
-		if (chrome) setButtonIcon(waitingIcon); else
-		if (safari) {
-			waitingButton = getMainButtonForActiveWindow();
-			animateButton(waitingButton, timerID, true);
-		}
-	}, 5000);
-	timeout = setTimeout(function () {
-		timeout = null;
-		if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
-		if (safari && waitingButton) animateButton(waitingButton, timerID, false);
-		if (args.onFailure) {
-			args.onFailure(xhr);
-		} else {
-			var sName = services[localStorage.defaultService].name;
-			if (chrome) showAlert('Pickpocket could not connect to your ' + sName + ' account.'); else
-			if (safari) {
-				showReport('Pickpocket could not connect to your ' + sName + ' account.');
-			}
-		}
-		xhr.abort();
-	}, 15000);
 }
 function findCachedFavicon(searchString) {
 	for (var key in localStorage) {

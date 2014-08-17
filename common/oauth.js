@@ -9,6 +9,19 @@ function doXHRPost(url, data, successHandler, errorHandler) {
 		console.log('doXHRPost called from ' + arguments.callee.caller.name + ' with data:', data);
 	console.log('Endpoint: "' + url + '"');
 	var xhr = new XMLHttpRequest();
+	var waiting = setTimeout(function () {
+		waiting = null;
+		showStatus('waiting');
+	}, 2000);
+	var timeout = setTimeout(function () {
+		timeout = null;
+		xhr.abort();
+		if (errorHandler) {
+			errorHandler(xhr);
+		} else {
+			showReport("I'm very sorry. Pickpocket could not connect to your Pocket account.");
+		}
+	}, 15000);
 	xhr.onreadystatechange = function () {
 		if (this.readyState === 4) {
 			clearTimeout(timeout);
@@ -50,19 +63,6 @@ function doXHRPost(url, data, successHandler, errorHandler) {
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF8");
 	xhr.setRequestHeader("X-Accept", "application/json");
 	xhr.send(data || null);
-	waiting = setTimeout(function () {
-		waiting = null;
-		showStatus('waiting');
-	}, 2000);
-	timeout = setTimeout(function () {
-		timeout = null;
-		xhr.abort();
-		if (errorHandler) {
-			errorHandler(xhr);
-		} else {
-			showReport("I'm very sorry. Pickpocket could not connect to your Pocket account.");
-		}
-	}, 15000);
 }
 function getRequestToken() {
 	try {
