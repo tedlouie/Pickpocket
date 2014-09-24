@@ -114,6 +114,13 @@ var itemList = {
 			items.sort(function (a,b) {
 				return sortOldestFirst ? (a.time - b.time) : (b.time - a.time);
 			});
+			items.sort(function (a,b) {
+				if (a.faved == '1' && b.faved == '0')
+					return 1;
+				if (a.faved == '0' && b.faved == '1')
+					return -1;
+				return 0;
+			});
 		}
 		items.forEach(this.addItem, this);
 		if (typeof selectedIndex != 'number' || selectedIndex < 0)
@@ -530,8 +537,7 @@ function openAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
 	var unreadItems = itemList.items.filter(filterFunc);
 	if (openLimit) {
-		var oof = localStorage.openOldestFirst;
-		if (oof == 'true' || oof == 'yes' || oof == 1) {
+		if (sortOldestFirst) {
 			unreadItems = unreadItems.slice(unreadItems.length - openLimit);
 		} else {
 			unreadItems = unreadItems.slice(0, openLimit);
