@@ -113,14 +113,14 @@ var itemList = {
 		if (listType == 'new or pinned') {
 			items.sort(function (a,b) {
 				return sortOldestFirst ? (a.time - b.time) : (b.time - a.time);
-			});
+			});/*
 			items.sort(function (a,b) {
 				if (a.faved == '1' && b.faved == '0')
 					return 1;
 				if (a.faved == '0' && b.faved == '1')
 					return -1;
 				return 0;
-			});
+			});*/
 		}
 		items.forEach(this.addItem, this);
 		if (typeof selectedIndex != 'number' || selectedIndex < 0)
