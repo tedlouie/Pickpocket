@@ -1,5 +1,13 @@
 var itemList = {
-	addItem: function (item) {
+	clear: function () {
+		this.el.innerHTML = '';
+		this.el.style.height = 'auto';
+		messageSpan.innerHTML = '';
+	},
+	getSelectedIndex: function () {
+		return [].slice.call(this.el.children).indexOf(this.selectedLi);
+	},
+	renderItem: function (item) {
 		var itemHtml = document.getElementById('li_tmpl').innerHTML.replace(/^\w+/, '')
 			.replace('{{age}}'  , getAge(item.time))
 			.replace('{{name}}' , item.title)
@@ -15,14 +23,6 @@ var itemList = {
 		itemLI.onclick = handleItemClick;
 		itemLI.onmouseenter = handleItemMouseEnter;
 		this.el.appendChild(itemLI);
-	},
-	clear: function () {
-		this.el.innerHTML = '';
-		this.el.style.height = 'auto';
-		messageSpan.innerHTML = '';
-	},
-	getSelectedIndex: function () {
-		return [].slice.call(this.el.children).indexOf(this.selectedLi);
 	},
 	select: function (li, index) {
 		if (this.urlRevealTimer) {
@@ -111,9 +111,9 @@ var itemList = {
 			return;
 		}
 		if (listType == 'new or pinned') {
-			items.sort(function (a,b) {
+			/*items.sort(function (a,b) {
 				return sortOldestFirst ? (a.time - b.time) : (b.time - a.time);
-			});/*
+			});
 			items.sort(function (a,b) {
 				if (a.faved == '1' && b.faved == '0')
 					return 1;
@@ -122,7 +122,7 @@ var itemList = {
 				return 0;
 			});*/
 		}
-		items.forEach(this.addItem, this);
+		items.forEach(this.renderItem, this);
 		if (typeof selectedIndex != 'number' || selectedIndex < 0)
 			selectedIndex = 0;
 		if (selectedIndex >= this.el.children.length)
@@ -170,11 +170,11 @@ var itemList = {
 
 function initialize() {
 	itemList.el            = document.querySelector('#itemlist');
-	itemList.items         = hc.itemCache;
 	itemList.selectedLi    = null;
 	itemList.itemHeight    = 0;
 	itemList.lastScrollTop = 0;
 	
+	allItems        = hc.itemCache;
 	processing      = false;
 	searchWaiter    = null;
 	maxWinHeight    = 600;
@@ -235,7 +235,7 @@ function initialize() {
 	};
 	menuButton.onfocus = menuButton.blur;
 	document.querySelector('#reloadbutton').onclick = function (e) {
-		itemList.items = null;
+		allItems = null;
 		updateItems(null);
 	};
 	document.onclick = function (e) {
@@ -264,7 +264,7 @@ function initialize() {
 }
 function archiveAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
-	var unreadItems = itemList.items.filter(filterFunc);
+	var unreadItems = allItems.filter(filterFunc);
 	if (arg == 'confirmed' || unreadItems.length < 10) {
 		messageSpan.innerHTML = ''; // '<i class="waiting"></i>';
 		hc.archiveItems(unreadItems, showMatchingItems);
@@ -301,7 +301,7 @@ function deleteItem(item) {
 	var delendumIndex = itemList.getSelectedIndex();
 	// itemList.scrollTop = itemList.el.scrollTop;
 	hc.deleteItem(item, function onSuccess() {
-		itemList.items = hc.itemCache;
+		allItems = hc.itemCache;
 		showMatchingItems(delendumIndex);
 		// itemList.scrollTop = null;
 	}, stdErrorHandler);
@@ -325,8 +325,8 @@ function getDefaultFilter() {
 	else return isUnreadOrPinned;
 }
 function getItemFromId(id) {
-	for (var item, i = 0; i < itemList.items.length; i++) {
-		item = itemList.items[i];
+	for (var item, i = 0; i < allItems.length; i++) {
+		item = allItems[i];
 		if (item.id == id) {
 			return item;
 		}
@@ -439,9 +439,9 @@ function handleInputKeyUp(e) {
 		if (modkeys == 0) {
 			if (e.target.value == '') {
 				if (itemList.listType == 'all') {
-					itemList.updateList(itemList.items.filter(defaultFilter), defaultListType);
+					itemList.updateList(allItems.filter(defaultFilter), defaultListType);
 				} else {
-					itemList.updateList(itemList.items, 'all');
+					itemList.updateList(allItems, 'all');
 				}
 			} else {
 				showMatchingItems();
@@ -484,7 +484,7 @@ function handleItemMouseEnter(e) {
 	itemList.select(e.currentTarget);
 }
 function initMainBox() {
-	if (itemList.items == null) {
+	if (allItems == null) {
 		inputField.blur();
 		inputField.className = 'waiting';
 		inputField.value = 'Retrieving links.';
@@ -495,8 +495,8 @@ function initMainBox() {
 	inputField.focus();
 	snoCheckbox.checked = (localStorage.searchNewOnly == 'yes');
 	upperdivHeight = document.querySelector('#upperdiv').offsetHeight;
-	if (itemList.items.length > 0) {
-		var itemsToShow = itemList.items.filter(defaultFilter);
+	if (allItems.length > 0) {
+		var itemsToShow = allItems.filter(defaultFilter);
 		var si = 0;
 		itemList.updateList(itemsToShow, defaultListType, true, si);
 	} else {
@@ -535,7 +535,7 @@ function isUntagged(item) {
 }
 function openAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
-	var unreadItems = itemList.items.filter(filterFunc);
+	var unreadItems = allItems.filter(filterFunc);
 	if (openLimit) {
 		if (sortOldestFirst) {
 			unreadItems = unreadItems.slice(unreadItems.length - openLimit);
@@ -574,7 +574,7 @@ function performItemAction(action, itemLI) {
 				if (itemList.listType == 'new or pinned') {
 					showMatchingItems(itemList.getSelectedIndex());
 				} else {
-					itemList.toggleArchivedUI(itemLi);
+					itemList.toggleArchivedUI(itemLI);
 				}
 			});
 			_gaq.push(['_trackEvent', 'User Actions', 'Archive Item By Click']);
@@ -588,8 +588,8 @@ function performItemAction(action, itemLI) {
 }
 function returnMatchingItems(keys, newOnly) {
 	var matches = [];
-	for (var item, i = itemList.items.length - 1; i >= 0; i--) {
-		item = itemList.items[i];
+	for (var item, i = allItems.length - 1; i >= 0; i--) {
+		item = allItems[i];
 		if (newOnly && item.state == 1)
 			continue;
 		var cItem = {
@@ -651,20 +651,15 @@ function showMatchingItems(selectedIndex) {
 	var input = inputField.value.replace(/\/\s+/,'/').replace(/\:\s+/,':');
 	var t = []; t[0] = new Date();
 	processing = true;
-	console.log(processing = new Date().getTime());
 	setTimeout(function () {
 		if (input == '') {
-			var itemsToShow = (itemList.listType == 'all') ? itemList.items : itemList.items.filter(defaultFilter);
+			var itemsToShow = (itemList.listType == 'all') ? allItems : allItems.filter(defaultFilter);
 			itemList.updateList(itemsToShow, null, false, selectedIndex);
 		} else {
 			var keys = input.trim().split(' ');
 			var matchingItems = returnMatchingItems(keys, snoCheckbox.checked);
-			// console.log("Time to find matching items: " + ((t[1] = new Date()) - t[0]) + "ms");
 			matchingItems.sort(function (a,b) { return b.rank - a.rank });
-			// console.log("Time to sort matching items: " + ((t[2] = new Date()) - t[1]) + "ms");
 			itemList.updateList(matchingItems, 'matching', false, selectedIndex);
-			// console.log("Time to redraw list: " + ((t[3] = new Date()) - t[2]) + "ms");
-			console.log('finished processing', new Date().getTime() - processing);
 			processing = false;
 		}
 	}, 1);
@@ -693,7 +688,7 @@ function togglePinned(item, callback) {
 function updateItems(since) {
 	messageSpan.innerHTML = ''; // '<i class="waiting"></i>';
 	hc.updateItems((since || null), function onSuccess() {
-		itemList.items = hc.itemCache;
-		itemList.updateList(itemList.items.filter(defaultFilter), defaultListType, false);
+		allItems = hc.itemCache;
+		itemList.updateList(allItems.filter(defaultFilter), defaultListType, false);
 	}, stdErrorHandler);
 }

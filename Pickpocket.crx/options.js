@@ -12,6 +12,9 @@ function populatePrefs() {
 	document.getElementById('at2').checked = (localStorage.archiveTrigger == 'none');
 	document.getElementById('pm0').checked = (localStorage.pinMethod == 'fave');
 	document.getElementById('pm1').checked = (localStorage.pinMethod == 'tag');
+	document.getElementById('sp0').checked = (localStorage.sortPinnedTo == '');
+	document.getElementById('sp1').checked = (localStorage.sortPinnedTo == 'top');
+	document.getElementById('sp2').checked = (localStorage.sortPinnedTo == 'bottom');
 	document.getElementById('sd0').checked = (localStorage.showAddDialog == 'yes');
 	document.getElementById('sd1').checked = (localStorage.showAddDialog == 'no');
 	document.getElementById('unw').checked = (localStorage.useNewWindow == 'yes');

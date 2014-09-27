@@ -320,6 +320,11 @@ div {
 	font-size: 12px;
 	color: white;
 	text-shadow: #3291F8 1px 0px 1px, #3291F8 0px 1px 1px, #3291F8 0px -1px 1px, #3291F8 -1px 0px 1px;
+} .archived:hover .ia.archive:hover:before {
+	top: 2px;
+	font-size: 13px;
+	color: #37F;
+	text-shadow: none;
 }
 .ia.delete {
 	font-size: 10px;

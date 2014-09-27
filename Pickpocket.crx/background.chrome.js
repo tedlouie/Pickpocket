@@ -353,7 +353,7 @@ function markItemRead(item, onSuccess, onFailure) {
 }
 function markItemUnread(item, onSuccess, onFailure) {
 	// console.log('Unarchiving:', item.url);
-	modifyItem(item, 'readd', null, function () {
+	modifyItem(item, 'readd', null, function (res) {
 		item.state = '0';
 		if (localStorage.unreadBadge == 'yes')
 			setBadge(1);
