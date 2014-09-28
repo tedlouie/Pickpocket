@@ -1,28 +1,31 @@
 var itemList = {
+	selectedLi: null,
+	itemHeight: 0,
+	lastScrollTop: 0,
 	clear: function () {
 		this.el.innerHTML = '';
 		this.el.style.height = 'auto';
 		messageSpan.innerHTML = '';
 	},
-	getSelectedIndex: function () {
-		return [].slice.call(this.el.children).indexOf(this.selectedLi);
-	},
-	renderItem: function (item) {
-		var itemHtml = document.getElementById('li_tmpl').innerHTML.replace(/^\w+/, '')
-			.replace('{{age}}'  , getAge(item.time))
-			.replace('{{name}}' , item.title)
-			.replace('{{blurb}}', item.blurb || item.url)
-			.replace('{{tags}}' , item.tags.join(', '))
-			.replace('{{pin}}'  , isPinned(item) ? 'Unpin' : 'Pin')
-			.replace('{{arc}}'  , isArchived(item) ? "Unarchive" : "Archive")
-			.replace('{{url}}'  , item.url);
+	createListItem: function (item) {
+		var itemHtml = itemTemplate.replace(/^\w+/, '')
+			.replace('{{age}}'    , getAge(item.time))
+			.replace('{{name}}'   , item.title)
+			.replace('{{blurb}}'  , item.blurb || item.url)
+			.replace('{{tags}}'   , item.tags.join(', '))
+			.replace('{{pin}}'    , isPinned(item) ? 'Unpin' : 'Pin')
+			.replace('{{arc}}'    , isArchived(item) ? "Unarchive" : "Archive")
+			.replace('{{url}}'    , item.url);
 		var itemLI = document.createElement('li');
 		itemLI.id = item.id;
 		itemLI.className = 'item' + (isPinned(item) ? ' pinned' : '') + (isArchived(item) ? ' archived' : ' queued');
 		itemLI.innerHTML = itemHtml;
 		itemLI.onclick = handleItemClick;
 		itemLI.onmouseenter = handleItemMouseEnter;
-		this.el.appendChild(itemLI);
+		return itemLI; // itemHtml;
+	},
+	getSelectedIndex: function () {
+		return [].slice.call(this.el.children).indexOf(this.selectedLi);
 	},
 	select: function (li, index) {
 		if (this.urlRevealTimer) {
@@ -33,7 +36,7 @@ var itemList = {
 			this.selectedLi.className = this.selectedLi.className.replace(' selected', '');
 			this.selectedLi.className = this.selectedLi.className.replace(' showurl', '');
 		}
-		this.selectedLi = li || this.el.childNodes[index];
+		this.selectedLi = li || this.el.children[index];
 		if (this.selectedLi) {
 			this.selectedLi.className += ' selected';
 			this.selectedLi.scrollIntoViewIfNeeded(false);
@@ -110,19 +113,14 @@ var itemList = {
 				snoLabel.style.display = 'inline';
 			return;
 		}
-		if (listType == 'new or pinned') {
-			/*items.sort(function (a,b) {
-				return sortOldestFirst ? (a.time - b.time) : (b.time - a.time);
-			});
-			items.sort(function (a,b) {
-				if (a.faved == '1' && b.faved == '0')
-					return 1;
-				if (a.faved == '0' && b.faved == '1')
-					return -1;
-				return 0;
-			});*/
-		}
-		items.forEach(this.renderItem, this);
+		console.time('updateList');
+		var newListEl = this.el.cloneNode(false);
+		items.forEach(function (item) {
+			newListEl.appendChild(this.createListItem(item));
+		}, this);
+		document.querySelector('#lowerdiv').replaceChild(newListEl, this.el);
+		this.el = newListEl;
+		console.timeEnd('updateList');
 		if (typeof selectedIndex != 'number' || selectedIndex < 0)
 			selectedIndex = 0;
 		if (selectedIndex >= this.el.children.length)
@@ -169,11 +167,9 @@ var itemList = {
 };
 
 function initialize() {
-	itemList.el            = document.querySelector('#itemlist');
-	itemList.selectedLi    = null;
-	itemList.itemHeight    = 0;
-	itemList.lastScrollTop = 0;
+	itemList.el = document.querySelector('#itemlist');
 	
+	itemTemplate    = document.getElementById('li_tmpl').innerHTML;
 	allItems        = hc.itemCache;
 	processing      = false;
 	searchWaiter    = null;
@@ -383,8 +379,8 @@ function handleInputKeyDown(e) {
 		case  33:    // pageup
 			e.preventDefault();
 			if (itemList.selectedLi) {
-				for (var i = 0; i < itemList.el.childNodes.length; i++) {
-					if (itemList.el.childNodes[i] === itemList.selectedLi) {
+				for (var i = 0; i < itemList.el.children.length; i++) {
+					if (itemList.el.children[i] === itemList.selectedLi) {
 						var sbIndex = i;
 						break;
 					}
@@ -398,16 +394,16 @@ function handleInputKeyDown(e) {
 		case  34:    // pagedown
 			e.preventDefault();
 			if (itemList.selectedLi) {
-				for (var i = 0; i < itemList.el.childNodes.length; i++) {
-					if (itemList.el.childNodes[i] === itemList.selectedLi) {
+				for (var i = 0; i < itemList.el.children.length; i++) {
+					if (itemList.el.children[i] === itemList.selectedLi) {
 						var sbIndex = i;
 						break;
 					}
 				}
 				var vil = itemList.el.offsetHeight / itemList.selectedLi.offsetHeight;
 				var newIndex = sbIndex + vil - 1;
-				if (newIndex >= itemList.el.childNodes.length)
-					newIndex = itemList.el.childNodes.length - 1;
+				if (newIndex >= itemList.el.children.length)
+					newIndex = itemList.el.children.length - 1;
 				itemList.select(null, newIndex);
 				// itemList.showFavicons();
 			} break;
