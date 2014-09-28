@@ -120,6 +120,7 @@ var itemList = {
 		}, this);
 		document.querySelector('#lowerdiv').replaceChild(newListEl, this.el);
 		this.el = newListEl;
+		this.el.offsetHeight; // this is to flush the render queue
 		console.timeEnd('updateList');
 		if (typeof selectedIndex != 'number' || selectedIndex < 0)
 			selectedIndex = 0;
