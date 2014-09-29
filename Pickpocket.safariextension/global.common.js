@@ -71,23 +71,7 @@ function addLinkToService(url, callback) {
 				};
 				submitItem(data, function onSuccess() {
 					runBackgroundUpdate();
-					var baseUrl = getBaseUrl(url);
-					var cachedIcon = getCachedFavicon(baseUrl);
-					if (cachedIcon) {
-						console.log('Cached icon found for:', url);
-					} else {
-						var faviconUrlSearch = faviconRegex.exec(html);
-						if (faviconUrlSearch && faviconUrlSearch[1]) {
-							var iconUrl = getFullyQualifiedIconUrl(faviconUrlSearch[1], baseUrl);
-							console.log('Fetching icon at url:', iconUrl);
-							getFaviconFromUrl(iconUrl, function (result) {
-								if (result) {
-									cacheFavicon(result, baseUrl);
-									console.log('Cached favicon for:', url);
-								}
-							});
-						}
-					}
+					getFavicon(url);
 					callback(true);
 				}, function onFailure() { callback(false); });
 			} else {
@@ -372,6 +356,10 @@ function getAllItemUrls(items, service) {
 function getAllTags() {
 	return _.chain(itemCache).map(function (item) { return item.tags; }).flatten().sort().uniq(true).value();
 }
+function getHostFromUrl(url) {
+	a.href = url;
+	return a.host;
+}
 function getBaseUrl(pageUrl) {
 	a.href = pageUrl;
 	return a.protocol + '//' + a.host;
@@ -390,32 +378,41 @@ function getCachedFavicon(baseUrl) {
 }
 function getFavicon(pageUrl, callback) {
 	var baseUrl = getBaseUrl(pageUrl);
-	var firstCallback = function (result) {
+	console.log('Getting favicon for:', baseUrl);
+	var callback0 = function (result) {
 		if (result) {
-			finalCallback(result);
+			callback3(result);
 		} else {
-			// console.log('No favicon.ico at ' + baseUrl + '; trying alternate method.');
-			getFaviconUrlFromPage(pageUrl, secondCallback);
+			console.log('No favicon.ico at ' + baseUrl + '; trying alternate method.');
+		getFaviconFromUrl(baseUrl + '/favicon.ico', callback1);
 		}
 	};
-	var secondCallback = function (result) {
+	var callback1 = function (result) {
 		if (result) {
-			// console.log('Favicon web url found:', result);
-			getFaviconFromUrl(result, finalCallback);
+			callback3(result);
+		} else {
+			console.log('No favicon.ico at ' + baseUrl + '; trying alternate method.');
+			getFaviconUrlFromPage(pageUrl, callback2);
+		}
+	};
+	var callback2 = function (result) {
+		if (result) {
+			console.log('Favicon web url found:', result);
+			getFaviconFromUrl(result, callback3);
 		} else {
 			console.log('No favicon found for', pageUrl);
-			finalCallback('');
+			callback3('');
 		}
 	};
-	var finalCallback = function (result) {
+	var callback3 = function (result) {
 		cacheFavicon(result || '', baseUrl);
-		callback(result);
+		callback && callback(result);
 	};
 	var cachedIcon = getCachedFavicon(baseUrl);
 	if (cachedIcon === null) {
-		getFaviconFromUrl(baseUrl + '/favicon.ico', firstCallback);
+		getFaviconFromUrl('http://www.google.com/s2/favicons?domain=' + getHostFromUrl(pageUrl), callback0);
 	} else {
-		callback(cachedIcon);
+		callback && callback(cachedIcon);
 	}
 }
 function getFaviconFromUrl(iconUrl, callback) {

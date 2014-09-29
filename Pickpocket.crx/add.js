@@ -5,7 +5,6 @@ function initialize() {
 	(mac = /^Mac/.test(navigator.platform));
 	(win = /^Win/.test(navigator.platform)) && (document.body.className += ' win');
 	(xp = /^Windows NT 5/.test(navigator.userAgent)) && (document.body.className += ' xp');;
-	(localStorage.loggingEnabled == 'yes') || (console.log = function () {});
 	
 	if (iframed) {
 		cr = chrome.runtime;
