@@ -295,12 +295,13 @@ function confirmAction(prompt, callback) {
 	messageSpan.appendChild(cancelLink);
 }
 function deleteItem(item) {
-	var delendumIndex = itemList.getSelectedIndex();
-	// itemList.scrollTop = itemList.el.scrollTop;
+	var delendumId = item.id;
 	hc.deleteItem(item, function onSuccess() {
 		allItems = hc.itemCache;
-		showMatchingItems(delendumIndex);
-		// itemList.scrollTop = null;
+		var delendumLi = document.getElementById(delendumId);
+		console.log('delendumLi:', delendumLi);
+		itemList.select(delendumLi.nextElementSibling || itemList.el.firstElementChild);
+		itemList.el.removeChild(delendumLi);
 	}, stdErrorHandler);
 }
 function getAge(itemDate) {
