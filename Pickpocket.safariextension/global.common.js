@@ -56,7 +56,11 @@ function XhrDataObj(type, members) {
 }
 function addLinkToService(url, callback) {
 	var xhr = new XMLHttpRequest();
-	var timeout = null;
+	var timeout = setTimeout(function () {
+		timeout = null;
+		xhr.abort();
+		console.log('XHR timed out getting "' + url + '"');
+	}, 15000);
 	xhr.onreadystatechange = function () {
 		if (this.readyState == 4) {
 			timeout && clearTimeout(timeout);
@@ -74,20 +78,11 @@ function addLinkToService(url, callback) {
 					getFavicon(url);
 					callback(true);
 				}, function onFailure() { callback(false); });
-			} else {
-				// console.log(this.status, this.statusText, this.responseText);
-				// console.log('Response headers:', this.getAllResponseHeaders());
 			}
 		}
 	};
 	xhr.open('GET', url, true);
 	xhr.send();
-	timeout = setTimeout(function () {
-		timeout = null;
-		xhr.abort();
-		console.log('XHR timed out getting "' + url + '"');
-	}, 15000);
-	return;
 }
 function addTabToService(data, callback) {
 	data = {
@@ -225,46 +220,32 @@ function deleteCachedFavicons() {
 }
 function doXHR(args) {
 	// method, url, data, successHandler, errorHandler
-	// console.log('doXHR called from ' + arguments.callee.caller.name + ' with data:', args.data);
 	console.log('XHR endpoint: "' + args.url + '"');
-	var timerID = Math.random().toString().slice(2);
-	if (args.data) args.data = dataObj2Str(args.data);
+	if (args.data) {
+		if (args.data.actions)
+			console.log('Actions:' + args.data.actions);
+		args.data = dataObj2Str(args.data);
+	}
 	var callingPocket = /(getpocket)|(readitlaterlist)\.com/.test(args.url);
 	var xhr = new XMLHttpRequest();
-	var waiting = setTimeout(function () {
-		waiting = null;
-		if (chrome) setButtonIcon(waitingIcon); else
-		if (safari) {
-			waitingButton = getMainButtonForActiveWindow();
-			animateButton(waitingButton, timerID, true);
-		}
-	}, 5000);
 	var timeout = setTimeout(function () {
 		timeout = null;
-		if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
-		if (safari && waitingButton) animateButton(waitingButton, timerID, false);
 		if (args.onFailure) {
 			args.onFailure(xhr);
 		} else {
 			var sName = services[localStorage.defaultService].name;
-			if (chrome) showAlert('Pickpocket could not connect to your ' + sName + ' account.'); else
+			if (chrome) {
+				showAlert('Pickpocket could not connect to your ' + sName + ' account.');
+			} else
 			if (safari) {
 				showReport('Pickpocket could not connect to your ' + sName + ' account.');
 			}
 		}
 		xhr.abort();
 	}, 15000);
-	// var t = []; t[0] = new Date();
 	xhr.onreadystatechange = function () {
 		if (this.readyState === 4) {
-			// console.log("Response time: " + ((t[1] = new Date()) - t[0]) + "ms");
 			timeout && clearTimeout(timeout);
-			if (waiting) {
-				clearTimeout(waiting);
-				waiting = null;
-				if (chrome) setButtonIcon(getDefaultIconForActiveTab()); else
-				if (safari && waitingButton) animateButton(waitingButton, timerID, false);
-			}
 			if (this.status === 200) {
 				var xlkr = this.getResponseHeader('X-Limit-Key-Reset');
 				console.log('Status:', this.getResponseHeader('Status'));
