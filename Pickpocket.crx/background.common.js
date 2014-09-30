@@ -378,7 +378,7 @@ function getCachedFavicon(baseUrl) {
 }
 function getFavicon(pageUrl, callback) {
 	var baseUrl = getBaseUrl(pageUrl);
-	console.log('Getting favicon for:', baseUrl);
+	// console.log('Getting favicon for:', baseUrl);
 	var callback0 = function (result) {
 		if (result) {
 			callback3(result);
