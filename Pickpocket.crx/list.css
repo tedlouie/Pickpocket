@@ -6,10 +6,9 @@ body {
 }
 body.chrome {
 	width: 580px;
-	background-color: #fff;
+	background-color: #fbfbfb;
 }
 body.safari {
-	background-color: rgba(240,240,240,0.25);
 }
 
 div {
@@ -196,7 +195,9 @@ div {
 .item.selected {
 	border: 1px solid #bbb;
 	border-radius: 3px;
-	background-color: #fafafa;
+	background-color: white;
+} .safari .item.selected {
+	background-color: rgba(255,255,255,0.75);
 }
 .item-top {
 	max-height: 16px;
