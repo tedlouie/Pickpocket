@@ -534,13 +534,6 @@ var tabsWatchedForClose = {};
 var reportObject = {};
 
 defaults.colorizeButton = 'no';
-defaults.hotkeyAdd = JSON.stringify({
-	keyCode   : 80,
-	altKey    : false,
-	ctrlKey   : true,
-	metaKey   : false,
-	shiftKey  : true
-});
 
 chrome.runtime.onMessage.addListener(handleMessage);
 

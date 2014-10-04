@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Pickpocket Settings</title>
-	<link rel='stylesheet' type='text/css' href='popover.css'>
+	<link rel="stylesheet" type="text/css" href="popover.css">
 	<script type="text/javascript" charset="utf-8" src="settings.js"></script>
 </head>
 <body class="settings">
@@ -142,10 +142,19 @@
 	<div class="controlblock" id="hotkey">
 		<p class="controlrow loose">
 			<label>
-				Pickpocket hotkey:
-				<input type='text' id='hki' name='hotkey'>
+				Main hotkey:
+				<input type="text" id="hki" name="hotkey" class="hotkey">
 			</label>
-		<button id='hkrb'>Restore Default</button>
+		<button id="hkrb" class="hotkey-reset" key="hotkey">Restore Default</button>
+		</p>
+	</div>
+	<div class="controlblock" id="addHotkey">
+		<p class="controlrow loose">
+			<label>
+				Add current page hotkey:
+				<input type="text" id="ahi" name="addHotkey" class="hotkey">
+			</label>
+		<button id="ahrb" class="hotkey-reset" key="addHotkey">Restore Default</button>
 		</p>
 	</div>
 	<div class="controlblock" id="addContextMenuItem">

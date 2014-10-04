@@ -94,7 +94,7 @@ function addTabToService(data, callback) {
 	var dialogShown = (localStorage.showAddDialog == 'yes');
 	submitItem(data, function onSuccess() {
 		runBackgroundUpdate();
-		callback(isNew && !dialogShown ? true : null);
+		callback(!dialogShown ? true : null);
 	}, function onFailure() { callback(false); });
 }
 function archiveItem(item, onSuccess, onFailure) {

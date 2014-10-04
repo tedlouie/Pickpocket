@@ -47,10 +47,16 @@ function initialize() {
 	}
 	
 	hkInput = document.getElementById('hki');
-	hkInput.value = populateHotkeyInput();
+	hkInput.value = populateHotkeyInput('hotkey');
 	hkInput.addEventListener('focus', handleHotkeyFocus, false);
 	hkInput.addEventListener('keydown', handleHotKeyDown, false);
 	document.getElementById('hkrb').addEventListener('click', resetHotkey, false);
+	
+	ahInput = document.getElementById('ahi');
+	ahInput.value = populateHotkeyInput('addHotkey');
+	ahInput.addEventListener('focus', handleHotkeyFocus, false);
+	ahInput.addEventListener('keydown', handleHotKeyDown, false);
+	document.getElementById('ahrb').addEventListener('click', resetHotkey, false);
 	
 	var sliders = document.querySelectorAll('input[type=range]');
 	for (var s, text, j = 0; j < sliders.length; j++) {
@@ -104,8 +110,8 @@ function handleHotKeyDown(e) {
 	}
 }
 function handleHotkeyFocus(e) {
-	setTimeout(function (e) {
-		hkInput.select();
+	setTimeout(function () {
+		e.target.select();
 	}, 10);
 }
 function passSettingsToAllPages(keys) {
@@ -132,8 +138,8 @@ function passSettingsToAllPages(keys) {
 		}
 	}
 }
-function populateHotkeyInput() {
-	var hotkey = JSON.parse(localStorage.hotkey);
+function populateHotkeyInput(key) {
+	var hotkey = JSON.parse(localStorage[key]);
 	var cStr = String.fromCharCode(hotkey.keyCode);
 	if (!/[0-9A-Z]/.test(cStr))
 		cStr = String.fromCharCode(parseInt(hotkey.keyIdentifier.slice(2), 16));
@@ -146,19 +152,21 @@ function populateHotkeyInput() {
 	if (hotkey.metaKey)  mStr += '⌘';
 	return mStr + cStr;
 }
-function resetHotkey() {
-	localStorage.hotkey = hc.defaults.hotkey;
-	hkInput.value = populateHotkeyInput();
+function resetHotkey(e) {
+	var key = e.target.getAttribute('key');
+	localStorage[key] = hc.defaults[key];
+	document.querySelector('input[name=' + key + ']').value = populateHotkeyInput(key);
 }
 function saveHotkey(e) {
 	e.target.blur();
+	var key = e.target.name;
 	var hotkey = {};
 	var props = ['which','keyCode','keyIdentifier','altKey','ctrlKey','metaKey','shiftKey'];
 	for (var i = 0; i < props.length; i++)
 		hotkey[props[i]] = e[props[i]];
-	localStorage.hotkey = JSON.stringify(hotkey);
-	e.target.value = populateHotkeyInput();
-	passSettingsToAllPages(['hotkey']);
+	localStorage[key] = JSON.stringify(hotkey);
+	e.target.value = populateHotkeyInput(key);
+	passSettingsToAllPages([key]);
 }
 function savePref() {
 	var control = event.target;

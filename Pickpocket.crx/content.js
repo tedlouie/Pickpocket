@@ -84,13 +84,6 @@ function MessageBox() {
 function eventMatchesHotkey(prop) {
 	return this.hotkey[prop] == this.event[prop];
 }
-function handleKeyDown(e) {
-	var props = ['keyCode','altKey','ctrlKey','metaKey','shiftKey'];
-	if (props.every(eventMatchesHotkey, { event: e, hotkey: my.hotkeyAdd })) {
-		e.preventDefault();
-		cr.sendMessage({ name: 'addOrArchivePage' });
-	}
-}
 function handleMessage(message, sender, callback) {
 	switch (message.name) {
 		case 'addResult':
@@ -116,9 +109,4 @@ function handleMessage(message, sender, callback) {
 var my = {};
 var cr = chrome.runtime;
 
-/*cr.sendMessage({ name: 'passStoredValues', data: ['hotkeyAdd'] }, function (response) {
-	for (var key in response)
-		my[key] = response[key];
-	document.addEventListener('keydown', handleKeyDown, false);
-});*/
 cr.onMessage.addListener(handleMessage);

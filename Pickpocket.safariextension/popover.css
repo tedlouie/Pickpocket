@@ -95,12 +95,12 @@ h1 {
 .disabled {
 	color: silver;
 }
-input#hki {
+input.hotkey {
 	/*width: 144px;*/
 	vertical-align: middle;
 	text-align: center;
 }
-button#hkrb {
+button.hotkey-reset {
 	width: auto;
 	height: 19px;
 	vertical-align: middle;
