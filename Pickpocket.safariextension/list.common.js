@@ -535,11 +535,7 @@ function openAllUnread(arg) {
 	var filterFunc = (localStorage.newExcludesTagged == 'yes') ? isUnreadAndUntagged : isUnread;
 	var unreadItems = allItems.filter(filterFunc);
 	if (openLimit) {
-		if (sortOldestFirst) {
-			unreadItems = unreadItems.slice(unreadItems.length - openLimit);
-		} else {
-			unreadItems = unreadItems.slice(0, openLimit);
-		}
+		unreadItems = unreadItems.slice(0, openLimit);
 	}
 	if (arg == 'confirmed' || openLimit || unreadItems.length < 10) {
 		hc.openItems(unreadItems);
